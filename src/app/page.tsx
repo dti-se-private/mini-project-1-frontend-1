@@ -1,11 +1,43 @@
 "use client"
-import { FC, useState } from 'react';
+import {
+    FC,
+    useCallback,
+    useEffect,
+} from 'react';
 import { Button, Image } from '@nextui-org/react';
 import NavBar from "@/src/components/NavBar";
+import useBasicEvent from '@/src/hooks/useBasicEvent';
+import debounce from 'lodash/debounce';
 
 const LandingPage: FC = () => {
-    const [selectedCategory, setSelectedCategory] = useState('All');
-    const categories = ['All', 'Music', 'Technology', 'Art', 'Sports'];
+    const { data, isLoading, category, page, setCategory, setPage } = useBasicEvent();
+    const categories = ['All',
+        'Sports',
+        'Entertainment',
+        'Conference',
+        'Networking',
+        'Health',
+        'Literature',
+        'Art',
+        'Workshop',
+        'Education',]
+
+    const handleScroll = useCallback(() => {
+        const bottom = window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight;
+        if (bottom && !isLoading) {
+            setPage(page + 1);
+        }
+    }, [isLoading, page, setPage]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debounceHandleScroll = useCallback(debounce(handleScroll, 200), [handleScroll]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', debounceHandleScroll);
+        return () => {
+            window.removeEventListener('scroll', debounceHandleScroll);
+        };
+    }, [debounceHandleScroll]);
 
     return (
         <div className="font-sans text-gray-900">
@@ -27,16 +59,16 @@ const LandingPage: FC = () => {
             </section>
 
             <nav className="flex justify-center w-full bg-gray-100 overflow-x-auto">
-                <div className="flex w-1/2 space-x-4 p-4">
-                    {categories.map((category) => (
+                <div className="flex w-auto md:w-3/4 space-x-4 p-4">
+                    {categories.map((optionCategory) => (
                         <Button
-                            key={category}
+                            key={optionCategory}
                             className={`px-4 py-2 rounded-full transition-colors ${
-                                selectedCategory === category ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'
+                                optionCategory === category ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'
                             }`}
-                            onClick={() => setSelectedCategory(category)}
+                            onClick={() => setCategory(optionCategory)}
                         >
-                            {category}
+                            {optionCategory}
                         </Button>
                     ))}
                 </div>
@@ -44,37 +76,23 @@ const LandingPage: FC = () => {
 
             {/* Event Overview */}
             <section>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
-                    {/* Example Event 1 */}
-                    <div className="bg-white p-4 rounded-lg shadow-md">
-                        <Image src="/event1.jpg" alt="Event 1" className="w-full h-40 object-cover rounded-md mb-4"/>
-                        <h3 className="text-lg font-bold">Event Title 1</h3>
-                        <h5 className="text-lg font-medium">Day, d Month yyyy at tt:ss UTC+TZ</h5>
-                        <div className="flex justify-between">
-                            <div>Rp000.000</div>
-                            <div>000 Participant(s)</div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-5">
+                    {data?.map((event, index) => (
+                        <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                            <Image src="/image.jpg" alt='event' className="w-full h-40 object-cover rounded-md mb-4"/>
+                            <h3 className="text-lg font-bold">{event.name}</h3>
+                            <h5 className="text-lg font-medium">{event.time}</h5>
+                            <div className="flex justify-between">
+                                <div>{event.price}</div>
+                                <div>{event.slots} Participant(s)</div>
+                            </div>
                         </div>
-                    </div>
-                    {/* Example Event 2 */}
-                    <div className="bg-white p-4 rounded-lg shadow-md">
-                        <Image src="/event2.jpg" alt="Event 2" className="w-full h-40 object-cover rounded-md mb-4"/>
-                        <h3 className="text-lg font-bold">Event Title 2</h3>
-                        <h5 className="text-lg font-medium">Day, d Month yyyy at tt:ss UTC+TZ</h5>
-                        <div className="flex justify-between">
-                            <div>Rp000.000</div>
-                            <div>000 Participant(s)</div>
+                    ))}
+                    {isLoading && (
+                        <div className="flex justify-center mt-4">
+                            <span>Loading more events...</span>
                         </div>
-                    </div>
-                    {/* Example Event 3 */}
-                    <div className="bg-white p-4 rounded-lg shadow-md">
-                        <Image src="/event2.jpg" alt="Event 2" className="w-full h-40 object-cover rounded-md mb-4"/>
-                        <h3 className="text-lg font-bold">Event Title 3</h3>
-                        <h5 className="text-lg font-medium">Day, d Month yyyy at tt:ss UTC+TZ</h5>
-                        <div className="flex justify-between">
-                            <div>Rp000.000</div>
-                            <div>000 Participant(s)</div>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </section>
         </div>
