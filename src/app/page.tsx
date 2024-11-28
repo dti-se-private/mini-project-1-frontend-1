@@ -38,14 +38,14 @@ const LandingPage: FC = () => {
             {/* Hero Section */}
             <section className="w-full relative h-auto bg-cover bg-center bg-gray-200 overflow-x-auto">
                 <div className="flex w-auto h-auto space-x-4">
-                    <div className="flex-shrink-0 w-[100vw] h-72 bg-black flex justify-center items-center opacity-50">
-                        <div></div>
+                    <div className="flex-shrink-0 w-[100vw] bg-black flex overflow-hidden">
+                        <Image src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt='event'/>
                     </div>
-                    <div className="flex-shrink-0 w-[100vw] h-72 bg-black flex justify-center items-center opacity-50">
-                        <div></div>
+                    <div className="flex-shrink-0 w-[100vw] bg-black flex overflow-hidden">
+                        <Image src="https://images.pexels.com/photos/14585155/pexels-photo-14585155.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt='event'/>
                     </div>
-                    <div className="flex-shrink-0 w-[100vw] h-72 bg-black flex justify-center items-center opacity-50">
-                        <div></div>
+                    <div className="flex-shrink-0 w-[100vw] bg-black flex overflow-hidden">
+                        <Image src="https://images.pexels.com/photos/69866/pexels-photo-69866.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt='event'/>
                     </div>
                 </div>
             </section>
