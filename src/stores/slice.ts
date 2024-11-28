@@ -6,17 +6,20 @@ export const rootSlice = createSlice({
     name: 'root',
     initialState: {
         events: [] as EventOverview[],
+        prevEvents: [] as EventOverview[],
         category: 'All',
         page: 0,
         size: 10,
     },
     reducers: {
         setCategory: (state, action) => {
-            state.category = action.payload;
             state.page = 0;
+            state.category = action.payload;
         },
         setPage: (state, action) => {
-            state.page = action.payload;
+            if (state.prevEvents.length > 0) {
+                state.page = action.payload;
+            }
         },
     },
     extraReducers: (builder) => {
@@ -28,6 +31,7 @@ export const rootSlice = createSlice({
                 } else {
                     state.events = [...state.events, ...payload];
                 }
+                state.prevEvents = payload;
             },
         );
     },

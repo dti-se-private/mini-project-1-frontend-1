@@ -5,6 +5,7 @@ import {
 import {rootSlice} from "@/src/stores/slice";
 import {RootState} from "@/src/stores";
 import {EventOverview, interfaceApi} from "@/src/stores/api";
+import {useEffect} from "react";
 
 export interface BasicEventContextType {
     data: EventOverview[];
@@ -21,7 +22,7 @@ const useBasicEvent = (): BasicEventContextType => {
     const dispatch = useDispatch();
     const { events, category, page, size } = useSelector((state: RootState) => state.root);
 
-    const { isLoading, error } = interfaceApi.useGetEventsByCategoryQuery({
+    const { isLoading, error, refetch } = interfaceApi.useGetEventsByCategoryQuery({
         category,
         page,
         size,
@@ -34,6 +35,10 @@ const useBasicEvent = (): BasicEventContextType => {
     const setPage = (page: number) => {
         dispatch(rootSlice.actions.setPage(page));
     }
+
+    useEffect(() => {
+        refetch()
+    }, [category, page, size, refetch]);
 
     return {
         data: events ?? [],

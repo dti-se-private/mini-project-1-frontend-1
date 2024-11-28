@@ -11,19 +11,11 @@ import debounce from 'lodash/debounce';
 
 const LandingPage: FC = () => {
     const { data, isLoading, category, page, setCategory, setPage } = useBasicEvent();
-    const categories = ['All',
-        'Sports',
-        'Entertainment',
-        'Conference',
-        'Networking',
-        'Health',
-        'Literature',
-        'Art',
-        'Workshop',
-        'Education',]
+    const categories = ['All', 'Sports', 'Entertainment', 'Conference',
+        'Networking', 'Health', 'Literature', 'Art', 'Workshop', 'Education',]
 
     const handleScroll = useCallback(() => {
-        const bottom = window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight;
+        const bottom = window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 1;
         if (bottom && !isLoading) {
             setPage(page + 1);
         }
@@ -59,7 +51,7 @@ const LandingPage: FC = () => {
             </section>
 
             <nav className="flex justify-center w-full bg-gray-100 overflow-x-auto">
-                <div className="flex w-auto md:w-3/4 space-x-4 p-4">
+                <div className="flex w-auto space-x-4 p-4">
                     {categories.map((optionCategory) => (
                         <Button
                             key={optionCategory}
