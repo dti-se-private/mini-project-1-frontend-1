@@ -5,7 +5,7 @@ import {
     useEffect,
 } from 'react';
 import { Button, Image } from '@nextui-org/react';
-import NavBar from "@/src/components/NavBar";
+import NavBar from "@/src/components/Header";
 import useBasicEvent from '@/src/hooks/useBasicEvent';
 import debounce from 'lodash/debounce';
 
