@@ -28,8 +28,16 @@ export const useLanding = () => {
     }
 
     useEffect(() => {
-        api.refetch();
-    }, [state.category, state.page, state.size, state.search, state.filter, api.refetch]);
+        if(state.page !== state.prevPage) {
+            api.refetch();
+        }
+    }, [state.page, state.prevPage, api.refetch]);
+
+    useEffect(() => {
+        if(api.data) {
+            dispatch(landingSlice.actions.setEvents({events: api.data.data}));
+        }
+    }, [api.data, dispatch]);
 
     return {
         api,
