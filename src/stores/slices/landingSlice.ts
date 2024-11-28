@@ -1,8 +1,9 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {Event} from "@/src/stores/apis/eventApi";
+import { createSlice } from "@reduxjs/toolkit";
+import { Event, eventApi } from "@/src/stores/apis/eventApi";
 
 export interface LandingState {
     events: Event[];
+    prevEvents: Event[],
     category: string;
     page: number;
     size: number;
@@ -14,6 +15,7 @@ export const landingSlice = createSlice({
     name: 'landingSlice',
     initialState: {
         events: [],
+        prevEvents: [],
         category: 'All',
         page: 0,
         size: 10,
@@ -28,7 +30,22 @@ export const landingSlice = createSlice({
         },
         setPage: (state, action) => {
             const {page} = action.payload;
-            state.page = page;
+            if (state.prevEvents.length > 0) {
+                state.page = page;
+            }
         },
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addMatcher(
+            eventApi.endpoints.getEventsByCategory.matchFulfilled,
+            (state, { payload }) => {
+                if (state.page === 0) {
+                    state.events = payload.data as Event[];
+                } else {
+                    state.events = [...state.events, ...payload.data as Event[]];
+                }
+                state.prevEvents = payload.data as Event[];
+            },
+        );
+    },
 });

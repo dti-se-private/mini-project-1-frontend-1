@@ -5,21 +5,20 @@ import {
     useEffect,
 } from 'react';
 import { Button, Image } from '@nextui-org/react';
-import NavBar from "@/src/components/Header";
-import useBasicEvent from '@/src/hooks/useBasicEvent';
+import { useLanding } from '@/src/hooks/useLanding';
 import debounce from 'lodash/debounce';
 
 const LandingPage: FC = () => {
-    const { data, isLoading, category, page, setCategory, setPage } = useBasicEvent();
+    const { api, state, setCategory, setPage } = useLanding();
     const categories = ['All', 'Sports', 'Entertainment', 'Conference',
         'Networking', 'Health', 'Literature', 'Art', 'Workshop', 'Education',]
 
     const handleScroll = useCallback(() => {
         const bottom = window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 1;
-        if (bottom && !isLoading) {
-            setPage(page + 1);
+        if (bottom) {
+            setPage(state.page + 1);
         }
-    }, [isLoading, page, setPage]);
+    }, [state.page, setPage]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const debounceHandleScroll = useCallback(debounce(handleScroll, 200), [handleScroll]);
@@ -33,8 +32,6 @@ const LandingPage: FC = () => {
 
     return (
         <div className="font-sans text-gray-900">
-            <NavBar />
-
             {/* Hero Section */}
             <section className="w-full relative h-auto bg-cover bg-center bg-gray-200 overflow-x-auto">
                 <div className="flex w-auto h-auto space-x-4">
@@ -56,7 +53,7 @@ const LandingPage: FC = () => {
                         <Button
                             key={optionCategory}
                             className={`px-4 py-2 rounded-full transition-colors ${
-                                optionCategory === category ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'
+                                optionCategory === state.category ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'
                             }`}
                             onClick={() => setCategory(optionCategory)}
                         >
@@ -69,7 +66,7 @@ const LandingPage: FC = () => {
             {/* Event Overview */}
             <section>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-5">
-                    {data?.map((event, index) => (
+                    {state?.events?.map((event, index) => (
                         <div key={index} className="bg-white p-4 rounded-lg shadow-md">
                             <Image src="/image.jpg" alt='event' className="w-full h-40 object-cover rounded-md mb-4"/>
                             <h3 className="text-lg font-bold">{event.name}</h3>
@@ -80,7 +77,7 @@ const LandingPage: FC = () => {
                             </div>
                         </div>
                     ))}
-                    {isLoading && (
+                    {api.isLoading && (
                         <div className="flex justify-center mt-4">
                             <span>Loading more events...</span>
                         </div>
