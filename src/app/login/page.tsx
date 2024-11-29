@@ -5,11 +5,14 @@ import {LoginByEmailAndPasswordRequest} from "@/src/stores/apis/authenticationAp
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@nextui-org/react";
+import {useModal} from "@/src/hooks/useModal";
+import Json from "@/src/components/Json";
 
 export default function Page() {
-    const {login} = useAuthentication();
+    const authentication = useAuthentication();
+    const modal = useModal();
 
-    const initialValues: LoginByEmailAndPasswordRequest = {
+    const initialValues = {
         email: "",
         password: "",
     };
@@ -20,22 +23,35 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
-        return login(values)
-            .then(() => {
-                actions.resetForm();
-                alert("Login succeed.");
+        const request: LoginByEmailAndPasswordRequest = {
+            email: values.email,
+            password: values.password,
+        }
+        return authentication
+            .login(request)
+            .then((data) => {
+                modal.setContent({
+                    header: "Login Succeed",
+                    body: <Json value={data ?? {}}/>,
+                })
             })
-            .catch(() => {
-                alert("Login failed.");
+            .catch((error) => {
+                modal.setContent({
+                    header: "Login Failed",
+                    body: <Json value={error}/>,
+                })
+            })
+            .finally(() => {
+                modal.onOpenChange(true);
             });
     };
 
     return (
-        <div className="container flex flex-col justify-center items-center my-12">
-            <div className="mb-8">
-                <h1 className="text-4xl font-bold">Login Now!</h1>
-            </div>
-            <div className="w-1/3">
+        <div className="container py-12 min-h-[90vh] flex flex-col justify-center items-center">
+            <h1 className="mb-8 text-4xl font-bold">Login Now!</h1>
+            <div
+                className="w-1/3"
+            >
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}

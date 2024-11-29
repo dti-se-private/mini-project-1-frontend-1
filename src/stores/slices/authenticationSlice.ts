@@ -5,8 +5,8 @@ import storage from "redux-persist/lib/storage";
 
 export interface AuthenticationState {
     isLoggedIn: boolean;
-    account: Account | undefined;
-    session: Session | undefined;
+    account?: Account;
+    session?: Session;
 }
 
 export const authenticationSlice = createSlice({
@@ -18,8 +18,7 @@ export const authenticationSlice = createSlice({
     } as AuthenticationState,
     reducers: {
         login: (state, action) => {
-            const {account, session} = action.payload;
-            state.account = account;
+            const {session} = action.payload;
             state.session = session;
             state.isLoggedIn = true;
         },
@@ -43,6 +42,10 @@ export const authenticationSlice = createSlice({
         refreshSession: (state, action) => {
             const {session} = action.payload;
             state.session = session;
+        },
+        setAccount: (state, action) => {
+            const {account} = action.payload;
+            state.account = account;
         }
     }
 });
