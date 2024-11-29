@@ -27,8 +27,10 @@ export const landingSlice = createSlice({
     reducers: {
         setCategory: (state, action) => {
             const {category} = action.payload;
-            state.category = category;
+            state.events = [];
+            state.prevPage = state.page;
             state.page = 0;
+            state.category = category;
         },
         setPage: (state, action) => {
             const {page} = action.payload;
@@ -40,11 +42,7 @@ export const landingSlice = createSlice({
         setEvents: (state, action) => {
             const {events} = action.payload;
             state.fetchedEvents = events;
-            if(state.page === 0) {
-                state.events = events;
-            } else {
-                state.events = state.events.concat(events);
-            }
+            state.events = state.events.concat(events);
         }
     },
 });
