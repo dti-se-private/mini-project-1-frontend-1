@@ -5,11 +5,20 @@ export interface Event {
     id: string;
     accountId: string;
     name: string;
+    description: string;
     location: string;
     category: string;
     time: string;
     price: number;
     slots: number;
+    vouchers: Voucher[];
+}
+
+export interface Voucher {
+    id: string;
+    accountId: string;
+    name: string;
+    description: string;
 }
 
 export interface SearchEventRequest {
@@ -26,6 +35,9 @@ export const eventApi = createApi({
     endpoints: (builder) => ({
         getEventsByCategory: builder.query<ApiResponse<Event[]>, SearchEventRequest>({
             query: ({category, page, size}) => `/events?category=${category}&page=${page}&size=${size}`,
+        }),
+        getEventDetails: builder.query<ApiResponse<Event>, {id: string}>({
+            query: ({id}) => `/events/${id}`,
         }),
     })
 });

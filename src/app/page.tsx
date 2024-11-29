@@ -7,6 +7,7 @@ import {
 import { Button, Image } from '@nextui-org/react';
 import { useLanding } from '@/src/hooks/useLanding';
 import debounce from 'lodash/debounce';
+import Link from "next/link";
 
 const LandingPage: FC = () => {
     const { api, state, setCategory, setPage } = useLanding();
@@ -67,7 +68,8 @@ const LandingPage: FC = () => {
             <section>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-5">
                     {state?.events?.map((event, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                        <Link key={index} className="bg-white p-4 rounded-lg shadow-md"
+                             href={`/events/${event.id}`}>
                             <Image src="/image.jpg" alt='event' className="w-full h-40 object-cover rounded-md mb-4"/>
                             <h3 className="text-lg font-bold">{event.name}</h3>
                             <h5 className="text-lg font-medium">{event.time}</h5>
@@ -75,7 +77,7 @@ const LandingPage: FC = () => {
                                 <div>{event.price}</div>
                                 <div>{event.slots} Participant(s)</div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                     {api.isLoading && (
                         <div className="flex justify-center mt-4">
