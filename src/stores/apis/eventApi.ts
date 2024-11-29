@@ -44,8 +44,11 @@ export const eventApi = createApi({
                 });
             }
         }),
-        getEventDetails: builder.query<ApiResponse<Event>, {id: string}>({
-            query: ({id}) => `/events/${id}`,
+        getEventDetails: builder.query<ResponseBody<Event>, {id: string}>({
+            query: ({id: id}) => ({
+                url: `/events/${id}`,
+                method: "GET"
+            }),
         }),
     })
 });
