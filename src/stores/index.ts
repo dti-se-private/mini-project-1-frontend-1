@@ -1,16 +1,22 @@
 import {combineReducers} from "redux";
 import {configureStore} from "@reduxjs/toolkit";
 import {persistReducer, persistStore} from "redux-persist";
-import {rootSlice} from "@/src/stores/slice";
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/es/constants";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
-import {interfaceApi} from "@/src/stores/api";
+import {eventApi} from "@/src/stores/apis/eventApi";
 import {setupListeners} from "@reduxjs/toolkit/query";
+import {landingSlice} from "@/src/stores/slices/landingSlice";
+import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
+import {authenticationApi} from "@/src/stores/apis/authenticationApi";
+import {accountApi} from "@/src/stores/apis/accountApi";
 
 
 const rootReducer = combineReducers({
-    [rootSlice.name]: rootSlice.reducer,
-    [interfaceApi.reducerPath]: interfaceApi.reducer,
+    [authenticationSlice.reducerPath]: authenticationSlice.reducer,
+    [landingSlice.reducerPath]: landingSlice.reducer,
+    [accountApi.reducerPath]: accountApi.reducer,
+    [authenticationApi.reducerPath]: authenticationApi.reducer,
+    [eventApi.reducerPath]: eventApi.reducer,
 })
 
 const createNoopStorage = () => {
@@ -27,11 +33,10 @@ const createNoopStorage = () => {
     }
 }
 
-const isServer = typeof window === 'undefined'
-const storage = isServer ? createNoopStorage() : createWebStorage('local')
+const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage()
 const persistedReducer = persistReducer({
         key: "persist",
-        whitelist: [],
+        whitelist: [authenticationSlice.reducerPath],
         storage,
     },
     rootReducer
@@ -44,7 +49,7 @@ export const store = configureStore({
         serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-    }).concat(interfaceApi.middleware),
+    }).concat(eventApi.middleware, authenticationApi.middleware, accountApi.middleware),
 })
 
 setupListeners(store.dispatch)
