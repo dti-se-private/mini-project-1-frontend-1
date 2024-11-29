@@ -3,17 +3,19 @@ import {configureStore} from "@reduxjs/toolkit";
 import {persistReducer, persistStore} from "redux-persist";
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE} from "redux-persist/es/constants";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
-import {eventApi} from "@/src/stores/apis/eventApi";
 import {setupListeners} from "@reduxjs/toolkit/query";
 import {landingSlice} from "@/src/stores/slices/landingSlice";
+import {modalSlice} from "@/src/stores/slices/modalSlice";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
 import {authenticationApi} from "@/src/stores/apis/authenticationApi";
 import {accountApi} from "@/src/stores/apis/accountApi";
-
+import {eventApi} from "@/src/stores/apis/eventApi";
+import storeRegistry from "@/src/registries/storeRegistry";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
     [landingSlice.reducerPath]: landingSlice.reducer,
+    [modalSlice.reducerPath]: modalSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
@@ -48,6 +50,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            ignoredPaths: [modalSlice.reducerPath],
         },
     }).concat(eventApi.middleware, authenticationApi.middleware, accountApi.middleware),
 })
@@ -58,3 +61,6 @@ export const persistor = persistStore(store)
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+storeRegistry.setStore(store);
+

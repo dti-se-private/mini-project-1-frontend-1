@@ -6,7 +6,7 @@ import {PersistGate} from "redux-persist/integration/react";
 import 'swiper/scss';
 import 'swiper/scss/pagination';
 
-export default function RootProvider(
+export default function Component(
     {
         children,
     }: Readonly<{
