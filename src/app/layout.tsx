@@ -2,6 +2,7 @@ import RootProvider from "@/src/components/RootProvider";
 import type {Metadata} from "next";
 import "./globals.scss";
 import Header from "@/src/components/Header";
+import Modal from "@/src/components/Modal";
 
 export const metadata: Metadata = {
     title: "Eventee",
@@ -19,6 +20,7 @@ export default function Layout(
         <html lang="en">
         <body>
         <RootProvider>
+            <Modal/>
             <Header/>
             {children}
         </RootProvider>

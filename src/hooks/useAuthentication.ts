@@ -7,7 +7,8 @@ import {
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
-import {accountApi} from "@/src/stores/apis/accountApi";
+import {accountApi, RetrieveOneAccountRequest} from "@/src/stores/apis/accountApi";
+import {useEffect} from "react";
 
 export const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -18,13 +19,21 @@ export const useAuthentication = () => {
     const [refreshSessionApiTrigger] = authenticationApi.useLazyRefreshSessionQuery();
     const [accountApiTrigger] = accountApi.useLazyRetrieveOneByIdQuery();
 
+    const retrieveAccount = async (request: RetrieveOneAccountRequest) => {
+        const accountApiResult = await accountApiTrigger(request).unwrap();
+        dispatch(authenticationSlice.actions.setAccount({
+            account: accountApiResult.data,
+        }))
+        return accountApiResult;
+    }
+
     const login = async (request: LoginByEmailAndPasswordRequest) => {
         const loginApiResult = await loginApiTrigger(request).unwrap();
-        const accountApiResult = await accountApiTrigger({id: loginApiResult.data!.accountId}).unwrap();
+
         dispatch(authenticationSlice.actions.login({
-            account: accountApiResult.data,
             session: loginApiResult.data,
         }));
+        return loginApiResult;
     }
 
     const register = async (request: RegisterByEmailAndPasswordRequest) => {
@@ -32,11 +41,13 @@ export const useAuthentication = () => {
         dispatch(authenticationSlice.actions.register({
             account: registerApiResult.data,
         }));
+        return registerApiResult;
     }
 
     const logout = async () => {
-        await logoutApiTrigger(state.session!).unwrap();
+        const logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
         dispatch(authenticationSlice.actions.logout({}));
+        return logoutApiResult;
     }
 
     const refreshSession = async (request: Session) => {
@@ -44,7 +55,16 @@ export const useAuthentication = () => {
         dispatch(authenticationSlice.actions.refreshSession({
             session: refreshSessionApiResult.data,
         }));
+        return refreshSessionApiResult
     }
+
+    useEffect(() => {
+        if (state.session) {
+            retrieveAccount({
+                id: state.session.accountId,
+            }).then()
+        }
+    }, [retrieveAccount, state.session])
 
     return {
         state,

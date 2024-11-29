@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {ApiResponse, rootBaseQuery} from "@/src/stores/apis";
+import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
 
 export interface Event {
     id: string;
@@ -31,10 +31,18 @@ export interface SearchEventRequest {
 
 export const eventApi = createApi({
     reducerPath: "eventApi",
-    baseQuery: rootBaseQuery,
+    baseQuery: axiosBaseQuery({
+        baseUrl: "http://localhost:8080/events"
+    }),
     endpoints: (builder) => ({
-        getEventsByCategory: builder.query<ApiResponse<Event[]>, SearchEventRequest>({
-            query: ({category, page, size}) => `/events?category=${category}&page=${page}&size=${size}`,
+        getEventsByCategory: builder.query<ResponseBody<Event[]>, SearchEventRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: `?category=${args.category}&page=${args.page}&size=${args.size}`,
+                    method: "GET"
+                });
+            }
         }),
         getEventDetails: builder.query<ApiResponse<Event>, {id: string}>({
             query: ({id}) => `/events/${id}`,

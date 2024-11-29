@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {ApiResponse, rootBaseQuery} from "@/src/stores/apis/index";
+import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
 
 export interface Account {
     id: string;
@@ -18,10 +18,18 @@ export interface RetrieveOneAccountRequest {
 
 export const accountApi = createApi({
     reducerPath: "accountApi",
-    baseQuery: rootBaseQuery,
+    baseQuery: axiosBaseQuery({
+        baseUrl: "http://localhost:8080/accounts"
+    }),
     endpoints: (builder) => ({
-        retrieveOneById: builder.query<ApiResponse<Account>, RetrieveOneAccountRequest>({
-            query: ({id}) => `/accounts/${id}`,
+        retrieveOneById: builder.query<ResponseBody<Account>, RetrieveOneAccountRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: `/${args.id}`,
+                    method: "GET",
+                });
+            }
         }),
     })
 });

@@ -1,5 +1,5 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
-import {ApiResponse, rawBaseQuery} from "@/src/stores/apis";
+import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
 import {Account} from "@/src/stores/apis/accountApi";
 
 
@@ -25,39 +25,52 @@ export interface Session {
     refreshTokenExpiredAt: string;
 }
 
+
 export const authenticationApi = createApi({
     reducerPath: "authenticationApi",
-    baseQuery: rawBaseQuery,
+    baseQuery: axiosBaseQuery({
+        baseUrl: "http://localhost:8080/authentications"
+    }),
     endpoints: (builder) => ({
-        registerByEmailAndPassword: builder.mutation<ApiResponse<Account>, RegisterByEmailAndPasswordRequest>({
+        registerByEmailAndPassword: builder.mutation<ResponseBody<Account>, RegisterByEmailAndPasswordRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({
-                    url: "/authentications/registers/email-password",
+                    url: "/registers/email-password",
                     method: "POST",
-                    body: args,
+                    data: args,
                 });
             }
         }),
-        loginByEmailAndPassword: builder.query<ApiResponse<Session>, LoginByEmailAndPasswordRequest>({
+        loginByEmailAndPassword: builder.query<ResponseBody<Session>, LoginByEmailAndPasswordRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({
-                    url: "/authentications/logins/email-password",
+                    url: "/logins/email-password",
                     method: "POST",
-                    body: args,
+                    data: args,
                 });
             }
         }),
-        logout: builder.query<ApiResponse<null>, Session>({
+        logout: builder.query<ResponseBody<null>, Session>({
+            // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({
-                    url: "/authentications/logouts/session",
+                    url: "/logouts/session",
                     method: "POST",
-                    body: args,
+                    data: args,
                 });
             }
         }),
-        refreshSession: builder.query<ApiResponse<Session>, Session>({
-            query: () => `/authentications/refreshes/session`,
+        refreshSession: builder.query<ResponseBody<Session>, Session>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: "/refreshes/session",
+                    method: "POST",
+                    data: args,
+                });
+            }
         }),
     })
 });
