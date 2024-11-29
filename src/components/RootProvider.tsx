@@ -15,7 +15,7 @@ export default function RootProvider(
 ) {
     return (
         <ReduxProvider store={store}>
-            <PersistGate persistor={persistor}>
+            <PersistGate loading={null} persistor={persistor}>
                 <NextUIProvider>
                     {children}
                 </NextUIProvider>

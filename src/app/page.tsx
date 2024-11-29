@@ -1,106 +1,91 @@
-import Image from "next/image";
-import {Button} from "@nextui-org/react";
+"use client"
+import {
+    FC,
+    useCallback,
+    useEffect,
+} from 'react';
+import { Button, Image } from '@nextui-org/react';
+import { useLanding } from '@/src/hooks/useLanding';
+import debounce from 'lodash/debounce';
 
-export default function Home() {
+const LandingPage: FC = () => {
+    const { api, state, setCategory, setPage } = useLanding();
+    const categories = ['All', 'Sports', 'Entertainment', 'Conference',
+        'Networking', 'Health', 'Literature', 'Art', 'Workshop', 'Education',]
+
+    const handleScroll = useCallback(() => {
+        const bottom = window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 1;
+        if (bottom) {
+            setPage(state.page + 1);
+        }
+    }, [state.page, setPage]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debounceHandleScroll = useCallback(debounce(handleScroll, 200), [handleScroll]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', debounceHandleScroll);
+        return () => {
+            window.removeEventListener('scroll', debounceHandleScroll);
+        };
+    }, [debounceHandleScroll]);
+
     return (
-        <div
-            className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-            <Button>
-                Hello World!
-            </Button>
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-                <Image
-                    className="dark:invert"
-                    src="/next.svg"
-                    alt="Next.js logo"
-                    width={180}
-                    height={38}
-                    priority
-                />
-                <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-                    <li className="mb-2">
-                        Get started by editing{" "}
-                        <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-                            app/page.tsx
-                        </code>
-                        .
-                    </li>
-                    <li>Save and see your changes instantly.</li>
-                </ol>
-
-                <div className="flex gap-4 items-center flex-col sm:flex-row">
-                    <a
-                        className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-                        href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Image
-                            className="dark:invert"
-                            src="/vercel.svg"
-                            alt="Vercel logomark"
-                            width={20}
-                            height={20}
-                        />
-                        Deploy now
-                    </a>
-                    <a
-                        className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-                        href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Read our docs
-                    </a>
+        <div className="font-sans text-gray-900">
+            {/* Hero Section */}
+            <section className="w-full relative h-auto bg-cover bg-center bg-gray-200 overflow-x-auto">
+                <div className="flex w-auto h-auto space-x-4">
+                    <div className="flex-shrink-0 w-[100vw] bg-black flex overflow-hidden">
+                        <Image src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt='event'/>
+                    </div>
+                    <div className="flex-shrink-0 w-[100vw] bg-black flex overflow-hidden">
+                        <Image src="https://images.pexels.com/photos/14585155/pexels-photo-14585155.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt='event'/>
+                    </div>
+                    <div className="flex-shrink-0 w-[100vw] bg-black flex overflow-hidden">
+                        <Image src="https://images.pexels.com/photos/69866/pexels-photo-69866.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt='event'/>
+                    </div>
                 </div>
-            </main>
-            <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-                <a
-                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Image
-                        aria-hidden
-                        src="/file.svg"
-                        alt="File icon"
-                        width={16}
-                        height={16}
-                    />
-                    Learn
-                </a>
-                <a
-                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Image
-                        aria-hidden
-                        src="/window.svg"
-                        alt="Window icon"
-                        width={16}
-                        height={16}
-                    />
-                    Examples
-                </a>
-                <a
-                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Image
-                        aria-hidden
-                        src="/globe.svg"
-                        alt="Globe icon"
-                        width={16}
-                        height={16}
-                    />
-                    Go to nextjs.org →
-                </a>
-            </footer>
+            </section>
+
+            <nav className="flex justify-center w-full bg-gray-100 overflow-x-auto">
+                <div className="flex w-auto space-x-4 p-4">
+                    {categories.map((optionCategory) => (
+                        <Button
+                            key={optionCategory}
+                            className={`px-4 py-2 rounded-full transition-colors ${
+                                optionCategory === state.category ? 'bg-gray-600 text-white' : 'bg-white text-gray-800'
+                            }`}
+                            onClick={() => setCategory(optionCategory)}
+                        >
+                            {optionCategory}
+                        </Button>
+                    ))}
+                </div>
+            </nav>
+
+            {/* Event Overview */}
+            <section>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-5">
+                    {state?.events?.map((event, index) => (
+                        <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+                            <Image src="/image.jpg" alt='event' className="w-full h-40 object-cover rounded-md mb-4"/>
+                            <h3 className="text-lg font-bold">{event.name}</h3>
+                            <h5 className="text-lg font-medium">{event.time}</h5>
+                            <div className="flex justify-between">
+                                <div>{event.price}</div>
+                                <div>{event.slots} Participant(s)</div>
+                            </div>
+                        </div>
+                    ))}
+                    {api.isLoading && (
+                        <div className="flex justify-center mt-4">
+                            <span>Loading more events...</span>
+                        </div>
+                    )}
+                </div>
+            </section>
         </div>
     );
-}
+};
+
+export default LandingPage;
