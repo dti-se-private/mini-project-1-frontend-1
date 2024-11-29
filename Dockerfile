@@ -17,8 +17,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 ENV WORKDIR=/workdir
 WORKDIR $WORKDIR
 
-# Copy files.
+# Copy the source code.
 COPY . .
+RUN rm .env
 
 # Install dependencies.
 RUN --mount=type=cache,target=~/.bun/install/cache,sharing=locked  \

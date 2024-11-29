@@ -38,16 +38,11 @@ export const axiosBaseQuery =
             const store = storeRegistry.getStore()!
             const authenticationState: AuthenticationState = store.getState().authenticationSlice
 
-            console.log('authenticationState', authenticationState)
             instance.interceptors.request.use(
                 async config => {
-                    config.headers['Access-Control-Allow-Origin'] = '*'
                     if (authenticationState.session?.accessToken) {
                         config.headers.Authorization = `Bearer ${authenticationState.session.accessToken}`
                     }
-
-                    console.log('config', config)
-
                     return config
                 }
             )
@@ -60,7 +55,7 @@ export const axiosBaseQuery =
                     if (error.response.status === 401 && authenticationState.session?.refreshToken) {
                         const refreshSessionResponse: AxiosResponse<ResponseBody<Session>> = await instance.request(
                             {
-                                url: 'http://localhost:8080/authentications/refreshes/session',
+                                url: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications/refreshes/session`,
                                 method: 'POST',
                                 data: authenticationState.session,
                             }
@@ -101,7 +96,8 @@ export const axiosBaseQuery =
                 return {
                     error: {
                         status: err.response?.status,
-                        data: err.response?.data || err.message,
+                        message:  err.message,
+                        data: err.response?.data,
                     }
                 }
             }

@@ -29,7 +29,7 @@ export interface Session {
 export const authenticationApi = createApi({
     reducerPath: "authenticationApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/authentications"
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications`
     }),
     endpoints: (builder) => ({
         registerByEmailAndPassword: builder.mutation<ResponseBody<Account>, RegisterByEmailAndPasswordRequest>({

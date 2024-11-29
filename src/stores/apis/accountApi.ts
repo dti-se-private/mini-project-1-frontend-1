@@ -19,7 +19,7 @@ export interface RetrieveOneAccountRequest {
 export const accountApi = createApi({
     reducerPath: "accountApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/accounts"
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/accounts`
     }),
     endpoints: (builder) => ({
         retrieveOneById: builder.query<ResponseBody<Account>, RetrieveOneAccountRequest>({

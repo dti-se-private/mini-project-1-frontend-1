@@ -23,7 +23,7 @@ export interface SearchEventRequest {
 export const eventApi = createApi({
     reducerPath: "eventApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: "http://localhost:8080/events"
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/events`
     }),
     endpoints: (builder) => ({
         getEventsByCategory: builder.query<ResponseBody<Event[]>, SearchEventRequest>({
