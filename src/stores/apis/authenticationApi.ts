@@ -9,7 +9,7 @@ export interface RegisterByEmailAndPasswordRequest {
     name: string;
     phone: string;
     dob: string;
-    referralCode: string;
+    referralCode: string | null;
 }
 
 export interface LoginByEmailAndPasswordRequest {
