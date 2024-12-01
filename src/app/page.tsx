@@ -72,8 +72,8 @@ const LandingPage: FC = () => {
                             <h3 className="text-lg font-bold">{event.name}</h3>
                             <h5 className="text-lg font-medium">{event.time}</h5>
                             <div className="flex justify-between">
-                                <div>{event.price}</div>
-                                <div>{event.slots} Participant(s)</div>
+                                <div>{event.eventTickets[0].price}</div>
+                                <div>{event.eventTickets[0].slots} Participant(s)</div>
                             </div>
                         </div>
                     ))}

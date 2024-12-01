@@ -32,13 +32,13 @@ export const useLanding = () => {
     }, [state.category, api.refetch]);
 
     useEffect(() => {
-        if(state.page > state.prevPage) {
+        if (state.page > state.prevPage) {
             api.refetch();
         }
-    }, [state.page, api.refetch]);
+    }, [state.page, state.prevPage, api.refetch]);
 
     useEffect(() => {
-        if(api.data) {
+        if (api.data) {
             dispatch(landingSlice.actions.setEvents({events: api.data.data}));
         }
     }, [api.data, dispatch]);
