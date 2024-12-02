@@ -40,6 +40,7 @@ export interface RetrieveEventResponse {
     organizerAccount: RetrieveOrganizerAccountResponse;
     eventTickets: RetrieveEventTicketResponse[];
     eventVouchers: RetrieveEventVoucherResponse[];
+    numberOfParticipants: number;
 }
 
 export interface SearchEventRequest {

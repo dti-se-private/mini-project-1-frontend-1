@@ -8,6 +8,7 @@ import {
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { eventApi } from "@/src/stores/apis/eventApi";
+import moment from "moment";
 
 const EventDetail: FC = () => {
     const { id } = useParams() as { id: string };
@@ -22,6 +23,12 @@ const EventDetail: FC = () => {
             window.location.replace('/404');
         }
     }, [isSuccess, data, id, router]);
+
+    const currencyFormatter = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        currencySign: 'accounting'
+    });
 
     return (
         <div className="font-sans text-gray-900">
@@ -44,8 +51,9 @@ const EventDetail: FC = () => {
                 {/* Event Details */}
                 <div className="flex flex-col md:flex-row md:space-x-10 mb-6">
                     <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                        <span className="material-icons text-gray-600">calendar_today</span>
-                        <p className="text-gray-800">{ data?.data?.time || "Event Time" }</p>
+                        <p className="text-gray-800">
+                            {moment(data?.data?.time).format('LT [on] DD/MM/YYYY')}
+                        </p>
                     </div>
                     <div className="flex items-center space-x-2">
                         <span className="material-icons text-gray-600">place</span>
@@ -60,18 +68,22 @@ const EventDetail: FC = () => {
                     </div>
                 </div>
 
-                <p className="text-gray-600 text-sm mb-4">By { data?.data?.organizerAccount.name || "Organizer Name" }</p>
+                <p className="text-gray-600 text-sm mb-4">By&nbsp;
+                    <span className="font-semibold text-gray-800">
+                        { data?.data?.organizerAccount.name || "Organizer Name" }
+                    </span>
+                </p>
 
                 {/* Pricing and Slots */}
                 <div className="flex flex-col items-center md:flex-row justify-between bg-gray-100 p-4 rounded-lg mb-6">
                     <p className="text-gray-700">
                         Price <span className="font-bold">
-                        { data?.data?.eventTickets[0].price || "free" }
+                        {currencyFormatter.format(data?.data?.eventTickets[0].price || 0) || "free" }
                         </span>
                     </p>
                     <p className="text-gray-700">
-                        <span className="font-bold">{ data?.data?.eventTickets[0].slots || "0" }</span> people are participating •{" "}
-                        <span className="font-bold">{ ((data?.data?.eventTickets[0].slots || 0) - (data?.data?.eventTickets[0].slots || 0)) }</span> slots left!
+                        <span className="font-bold">{ data?.data?.numberOfParticipants || 0 }</span> people are participating •{" "}
+                        <span className="font-bold">{ ((data?.data?.eventTickets[0].slots || 0) - (data?.data?.numberOfParticipants || 0)) }</span> slots left!
                     </p>
                 </div>
 
