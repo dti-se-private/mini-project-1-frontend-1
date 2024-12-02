@@ -11,6 +11,8 @@ export interface Event {
     time: string;
     price: number;
     slots: number;
+    numberOfParticipants: number;
+    organizerAccount: Organizer;
     vouchers: Voucher[];
 }
 
@@ -19,6 +21,10 @@ export interface Voucher {
     accountId: string;
     name: string;
     description: string;
+}
+
+export interface Organizer {
+    name: string;
 }
 
 export interface SearchEventRequest {
@@ -46,7 +52,7 @@ export const eventApi = createApi({
         }),
         getEventDetails: builder.query<ResponseBody<Event>, {id: string}>({
             query: ({id: id}) => ({
-                url: `/events/${id}`,
+                url: `/${id}`,
                 method: "GET"
             }),
         }),

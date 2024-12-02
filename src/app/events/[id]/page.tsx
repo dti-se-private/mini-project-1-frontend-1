@@ -60,18 +60,18 @@ const EventDetail: FC = () => {
                     </div>
                 </div>
 
-                <p className="text-gray-600 text-sm mb-4">By { data?.data?.accountId || "Organizer Name" }</p>
+                <p className="text-gray-600 text-sm mb-4">By { data?.data?.organizerAccount.name || "Organizer Name" }</p>
 
                 {/* Pricing and Slots */}
                 <div className="flex flex-col items-center md:flex-row justify-between bg-gray-100 p-4 rounded-lg mb-6">
                     <p className="text-gray-700">
                         Price <span className="font-bold">
-                        { data?.data?.price || "Event Price" }
+                        { data?.data?.price || "free" }
                         </span>
                     </p>
                     <p className="text-gray-700">
-                        <span className="font-bold">{ data?.data?.slots || "0" }</span> people are participating •{" "}
-                        <span className="font-bold">{ data?.data?.slots || "0" }</span> slots left!
+                        <span className="font-bold">{ data?.data?.numberOfParticipants || "0" }</span> people are participating •{" "}
+                        <span className="font-bold">{ ((data?.data?.numberOfParticipants || 0) - (data?.data?.slots || 0)) }</span> slots left!
                     </p>
                 </div>
 
