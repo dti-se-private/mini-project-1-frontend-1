@@ -11,10 +11,14 @@ import {authenticationApi} from "@/src/stores/apis/authenticationApi";
 import {accountApi} from "@/src/stores/apis/accountApi";
 import {eventApi} from "@/src/stores/apis/eventApi";
 import storeRegistry from "@/src/registries/storeRegistry";
+import {searchSlice} from "@/src/stores/slices/searchSlice";
+import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
     [landingSlice.reducerPath]: landingSlice.reducer,
+    [searcherSlice.reducerPath]: searcherSlice.reducer,
+    [searchSlice.reducerPath]: searchSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
