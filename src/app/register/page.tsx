@@ -37,7 +37,7 @@ export default function Page() {
             name: values.name,
             phone: values.phone,
             dob: new Date(values.dob).toISOString(),
-            referralCode: values.referralCode,
+            referralCode: values.referralCode === "" ? null : values.referralCode,
         }
         return authentication
             .register(request)
