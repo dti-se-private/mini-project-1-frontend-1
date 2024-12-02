@@ -1,14 +1,12 @@
 "use client"
-import {Button, Image} from '@nextui-org/react';
-import {useLanding} from '@/src/hooks/useLanding';
-import {upperFirst} from "tiny-case";
-import {Swiper, SwiperSlide} from "swiper/react";
-import {Pagination} from "swiper/modules";
+import {Button, Checkbox, CheckboxGroup, Image} from '@nextui-org/react';
+import {useSearch} from "@/src/hooks/useSearch";
 import moment from "moment";
+import {upperFirst} from "tiny-case";
 
 export default function Page() {
-    const landing = useLanding();
-    const categories = ['all', 'sports', 'entertainment', 'conference', 'networking', 'health', 'literature', 'art', 'workshop', 'education']
+    const search = useSearch();
+    const filters = ["name", "description", "category", "location", "time"]
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -17,50 +15,34 @@ export default function Page() {
     });
 
     return (
-        <div className="mb-8">
-            {/* Hero */}
-            <section className="w-full mb-8">
-                <Swiper
-                    loop={true}
-                    autoplay={true}
-                    modules={[Pagination]}
-                    slidesPerView={1.5}
-                    centeredSlides={true}
-                    pagination={{clickable: true}}
-                >
-                    {
-                        [1, 2, 3].map((item, index) => (
-                            <SwiperSlide key={index}>
-                                <Image
-                                    className="w-full h-[75vh]"
-                                    radius="md"
-                                    src={`https://placehold.co/1366x768?text=hero${item}`}
-                                    alt="hero"
-                                />
-                            </SwiperSlide>
-                        ))
-                    }
-                </Swiper>
-            </section>
-
-            {/* Categories */}
+        <div className="my-8">
+            {/* Filters */}
             <section className="container flex flex-col justify-center items-center mb-8">
-                <div className="flex justify-center items-center gap-4">
-                    {categories.map((category) => (
-                        <Button
-                            key={category}
-                            onClick={() => landing.setCategory(category)}
+                <CheckboxGroup
+                    orientation="horizontal"
+                    defaultValue={filters}
+                    onChange={(values) => search.setRequest({
+                        ...search.searcherState.request,
+                        filters: values
+                    })}
+                >
+                    {filters.map((value, index) => (
+                        <Checkbox
+                            className="mx-2"
+                            key={index}
+                            value={value}
                         >
-                            {upperFirst(category)}
-                        </Button>
+                            {upperFirst(value)}
+                        </Checkbox>
                     ))}
-                </div>
+                </CheckboxGroup>
             </section>
 
-            {/* Events */}
+            {/* Events */
+            }
             <section className="container flex flex-col justify-center items-center">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8">
-                    {landing.searcherState.events.map((event, index) => (
+                    {search.searcherState.events.map((event, index) => (
                         <div
                             key={index}
                             className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-1/4 h-full"
@@ -80,12 +62,12 @@ export default function Page() {
                             </div>
                         </div>
                     ))}
-                    {landing.eventApiResult.isLoading && (
+                    {search.eventApiResult.isLoading && (
                         <div className="flex justify-center mt-4">
                             Loading...
                         </div>
                     )}
-                    {landing.searcherState.events.length === 0 && (
+                    {search.searcherState.events.length === 0 && (
                         <div className="flex justify-center mt-4">
                             Empty!
                         </div>
@@ -95,22 +77,24 @@ export default function Page() {
                 {/* Pagination */}
                 <div className="flex justify-center gap-4">
                     <Button
-                        onClick={() => landing.setPage(landing.searcherState.request.page - 1)}
+                        onClick={() => search.setPage(search.searcherState.request.page - 1)}
                     >
                         {'<'}
                     </Button>
                     <Button
                         disabled={true}
                     >
-                        {landing.searcherState.request.page + 1}
+                        {search.searcherState.request.page + 1}
                     </Button>
                     <Button
-                        onClick={() => landing.setPage(landing.searcherState.request.page + 1)}
+                        onClick={() => search.setPage(search.searcherState.request.page + 1)}
                     >
                         {'>'}
                     </Button>
                 </div>
             </section>
         </div>
-    );
+    )
+        ;
 };
+

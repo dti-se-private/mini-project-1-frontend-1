@@ -1,16 +1,16 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-export interface LandingState {
+export interface SearchState {
     prevPage: number,
     currentPage: number,
 }
 
-export const landingSlice = createSlice({
-    name: 'landingSlice',
+export const searchSlice = createSlice({
+    name: 'searchSlice',
     initialState: {
         prevPage: 0,
         currentPage: 0
-    } as LandingState,
+    } as SearchState,
     reducers: {
         setPage: (state, action) => {
             const {prevPage, currentPage} = action.payload;

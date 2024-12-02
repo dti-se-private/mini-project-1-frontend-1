@@ -1,34 +1,31 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {eventApi} from "@/src/stores/apis/eventApi";
+import {eventApi, SearchEventRequest} from "@/src/stores/apis/eventApi";
 import {useEffect} from "react";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
-import {landingSlice} from "@/src/stores/slices/landingSlice";
+import {searchSlice} from "@/src/stores/slices/searchSlice";
 
-export const useLanding = () => {
+export const useSearch = () => {
     const dispatch = useDispatch();
 
-    const landingState = useSelector((state: RootState) => state.landingSlice);
+    const searchState = useSelector((state: RootState) => state.searchSlice);
 
     const searcherState = useSelector((state: RootState) => state.searcherSlice);
 
     const eventApiResult = eventApi.useSearchEventsQuery(searcherState.request)
 
-    const setCategory = (category: string) => {
-        dispatch(landingSlice.actions.setPage({
+    const setRequest = (request: SearchEventRequest) => {
+        dispatch(searchSlice.actions.setPage({
             prevPage: 0,
             currentPage: 0,
         }));
-        dispatch(searcherSlice.actions.setRequest({
-            page: 0,
-            search: category === "all" ? "" : category,
-            filters: ["category"]
-        }));
+        dispatch(searcherSlice.actions.setRequest(request));
     }
+
 
     const setPage = (page: number) => {
         if (page >= 0) {
-            dispatch(landingSlice.actions.setPage({
+            dispatch(searchSlice.actions.setPage({
                 currentPage: page
             }));
             dispatch(searcherSlice.actions.setRequest({
@@ -44,7 +41,7 @@ export const useLanding = () => {
 
     useEffect(() => {
         eventApiResult.refetch();
-    }, [landingState.prevPage, landingState.currentPage]);
+    }, [searchState.prevPage, searchState.currentPage]);
 
     useEffect(() => {
         eventApiResult.refetch();
@@ -53,7 +50,7 @@ export const useLanding = () => {
     return {
         eventApiResult,
         searcherState,
-        setCategory,
+        setRequest,
         setPage
     };
 }
