@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import {Modal, ModalBody, ModalContent, ModalHeader} from "@nextui-org/react";
 import {useModal} from "@/src/hooks/useModal";
 

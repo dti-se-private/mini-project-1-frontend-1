@@ -3,7 +3,6 @@ import type {AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios'
 import axios from 'axios'
 import {authenticationSlice, AuthenticationState} from "@/src/stores/slices/authenticationSlice";
 import storeRegistry from "@/src/registries/storeRegistry";
-import _ from "lodash";
 import applyCaseMiddleware from "axios-case-converter";
 
 export interface ResponseBody<T> {
@@ -80,14 +79,6 @@ export const axiosBaseQuery =
                     params,
                     headers
                 });
-
-                if (result.data) {
-                    result.data = _.omit(result.data, ['new'])
-                    if (result.data?.data) {
-                        result.data.data = _.omit(result.data.data, ['new'])
-                    }
-                }
-
                 return {
                     data: result.data
                 }
@@ -96,7 +87,7 @@ export const axiosBaseQuery =
                 return {
                     error: {
                         status: err.response?.status,
-                        message:  err.message,
+                        message: err.message,
                         data: err.response?.data,
                     }
                 }

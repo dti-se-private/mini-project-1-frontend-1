@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import {NextUIProvider} from '@nextui-org/react'
 import {Provider as ReduxProvider} from "react-redux";
 import {persistor, store} from "@/src/stores";

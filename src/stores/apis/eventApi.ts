@@ -43,11 +43,10 @@ export interface RetrieveEventResponse {
 }
 
 export interface SearchEventRequest {
-    category: string;
     page: number;
     size: number;
     search: string;
-    filter: string[];
+    filters: string[];
 }
 
 export const eventApi = createApi({
@@ -56,11 +55,17 @@ export const eventApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/events`
     }),
     endpoints: (builder) => ({
-        getEventsByCategory: builder.query<ResponseBody<RetrieveEventResponse[]>, SearchEventRequest>({
+        searchEvents: builder.query<ResponseBody<RetrieveEventResponse[]>, SearchEventRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`,
+                    `search=${args.search}`,
+                    ...args.filters.map(filter => `filters=${filter}`)
+                ];
                 return baseQuery({
-                    url: `?page=${args.page}&size=${args.size}&search=${args.category}&filters=category`,
+                    url: `?${queryParams.join("&")}`,
                     method: "GET"
                 });
             }
