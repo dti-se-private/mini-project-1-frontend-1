@@ -1,34 +1,31 @@
 'use client';
-
-import { useParams } from 'next/navigation';
-import {
-    FC,
-    useEffect,
-} from "react";
-import {Button, Image} from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { eventApi } from "@/src/stores/apis/eventApi";
+import {useParams} from 'next/navigation';
+import {FC} from "react";
+import {Button, Image, Spinner} from "@nextui-org/react";
+import {eventApi} from "@/src/stores/apis/eventApi";
 import moment from "moment";
 
 const EventDetail: FC = () => {
     const { id } = useParams() as { id: string };
-    const router = useRouter();
-
-    const { data, isSuccess } = eventApi.useGetEventDetailsQuery({ id });
-
-    useEffect(() => {
-        if (!id ||
-            !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
-                .test(id)) {
-            window.location.replace('/404');
-        }
-    }, [isSuccess, data, id, router]);
+    const { data, isLoading } = eventApi.useGetEventDetailsQuery({ id });
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
         currencySign: 'accounting'
     });
+
+    if (isLoading) {
+        return <Spinner />;
+    }
+
+    if (!isLoading && !data?.data) {
+        return (
+            <div className="flex justify-center items-center h-[80vh]">
+                No Event Found!
+            </div>
+        );
+    }
 
     return (
         <div className="font-sans text-gray-900">
@@ -37,7 +34,7 @@ const EventDetail: FC = () => {
                 <Image
                     className="w-full h-[75vh] object-cover"
                     src={`https://placehold.co/1366x768?text=EventCover`}
-                    alt="hero"
+                    alt="Event Cover"
                 />
             </section>
 
