@@ -17,6 +17,7 @@ import Link from "next/link";
 import {SearchIcon} from "@nextui-org/shared-icons";
 import Json from "@/src/components/Json";
 import {useModal} from "@/src/hooks/useModal";
+import _ from "lodash";
 
 export default function Component() {
     const modal = useModal();
@@ -45,6 +46,13 @@ export default function Component() {
             });
     }
 
+    const handleSearch = _.debounce((event: React.ChangeEvent<HTMLInputElement>) => {
+        search.setRequest({
+            ...search.searcherState.request,
+            search: event.target.value
+        });
+    }, 500)
+
     return (
         <Navbar isBordered>
             <NavbarBrand className="w-1/5">
@@ -59,10 +67,7 @@ export default function Component() {
                         if (window.location.pathname !== "/search") {
                             router.push("/search");
                         }
-                        search.setRequest({
-                            ...search.searcherState.request,
-                            search: event.target.value
-                        });
+                        handleSearch(event);
                     }}
                 />
             </NavbarContent>

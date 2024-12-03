@@ -19,13 +19,14 @@ export default function Page() {
     });
 
     return (
-        <div className="mb-8 flex flex-col justify-center items-center">
+        <div className="pb-8 flex flex-col justify-center items-center">
             {/* Hero */}
             <section className="w-full mb-8">
                 <Swiper
                     loop={true}
                     autoplay={true}
                     modules={[Pagination]}
+                    spaceBetween={5}
                     slidesPerView={1.5}
                     centeredSlides={true}
                     pagination={{clickable: true}}
@@ -62,11 +63,11 @@ export default function Page() {
 
             {/* Events */}
             <section className="container flex flex-col justify-center items-center">
-                <div className="flex flex-wrap justify-center items-center gap-6 mb-8">
+                <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
                     {landing.searcherState.events.map((event, index) => (
                         <div
                             key={index}
-                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-1/4 h-full"
+                            className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-3/4 md:w-1/4 h-full"
                         >
                             <Image
                                 className="w-full h-3/5 object-cover rounded-md mb-4"
@@ -74,11 +75,16 @@ export default function Page() {
                                 alt='event'
                             />
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
-                                <h3 className="text-lg font-bold">{event.name}</h3>
-                                <h5 className="">{moment(event.time).format('LT [on] DD/MM/YYYY')}</h5>
-                                <div className="w-full h-1/5 flex flex-col md:flex-row justify-between">
-                                    <div>{currencyFormatter.format(event.eventTickets[0].price)}</div>
-                                    <div>{event.eventTickets[0].slots} Participants</div>
+                                <h3 className="overflow-hidden truncate w-full text-lg font-bold">{event.name}</h3>
+                                <h5 className="overflow-hidden truncate w-full">{moment(event.time).format('LT [on] DD/MM/YYYY')}</h5>
+                                <div className="overflow-hidden truncate w-full">{event.location}</div>
+                                <div className="w-full h-1/5 flex justify-between">
+                                    <div className="overflow-hidden truncate w-full">
+                                        {currencyFormatter.format(event.eventTickets[0].price)}
+                                    </div>
+                                    <div className="overflow-hidden truncate w-full text-right">
+                                        {event.eventTickets[0].slots} Slots left!
+                                    </div>
                                 </div>
                             </div>
                         </div>
