@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {eventApi, SearchEventRequest} from "@/src/stores/apis/eventApi";
+import {eventApi, RetrieveEventResponse, SearchEventRequest} from "@/src/stores/apis/eventApi";
 import {useEffect} from "react";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {searchSlice} from "@/src/stores/slices/searchSlice";
@@ -35,7 +35,10 @@ export const useSearch = () => {
     }
 
     useEffect(() => {
-        const newEvents = eventApiResult.data?.data ?? [];
+        let newEvents: RetrieveEventResponse[] = [];
+        if (searcherState.request.filters.length > 0) {
+            newEvents = eventApiResult.data?.data ?? [];
+        }
         dispatch(searcherSlice.actions.setEvents({events: newEvents}));
     }, [dispatch, eventApiResult.data]);
 
@@ -44,8 +47,15 @@ export const useSearch = () => {
     }, [searchState.prevPage, searchState.currentPage]);
 
     useEffect(() => {
+        setRequest({
+            page: 0,
+            size: 10,
+            search: '',
+            filters: ["name", "description", "category", "location", "time"]
+        });
         eventApiResult.refetch();
     }, []);
+
 
     return {
         eventApiResult,

@@ -1,5 +1,5 @@
 "use client"
-import {Button, Image} from '@nextui-org/react';
+import {Button, Image, Spinner} from '@nextui-org/react';
 import {useLanding} from '@/src/hooks/useLanding';
 import {upperFirst} from "tiny-case";
 import {Swiper, SwiperSlide} from "swiper/react";
@@ -13,11 +13,13 @@ export default function Page() {
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
-        currencySign: 'accounting'
+        currencySign: 'accounting',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     });
 
     return (
-        <div className="mb-8">
+        <div className="mb-8 flex flex-col justify-center items-center">
             {/* Hero */}
             <section className="w-full mb-8">
                 <Swiper
@@ -29,12 +31,12 @@ export default function Page() {
                     pagination={{clickable: true}}
                 >
                     {
-                        [1, 2, 3].map((item, index) => (
+                        [1, 2, 3, 4].map((item, index) => (
                             <SwiperSlide key={index}>
                                 <Image
                                     className="w-full h-[75vh]"
                                     radius="md"
-                                    src={`https://placehold.co/1366x768?text=hero${item}`}
+                                    src={`https://placehold.co/1366x768?text=hero${index}`}
                                     alt="hero"
                                 />
                             </SwiperSlide>
@@ -45,11 +47,12 @@ export default function Page() {
 
             {/* Categories */}
             <section className="container flex flex-col justify-center items-center mb-8">
-                <div className="flex justify-center items-center gap-4">
+                <div className="flex flex-wrap justify-center items-center gap-4">
                     {categories.map((category) => (
                         <Button
                             key={category}
                             onClick={() => landing.setCategory(category)}
+                            variant={(landing.searcherState.request.search === "" && category === "all") || (landing.searcherState.request.search === category) ? 'solid' : 'bordered'}
                         >
                             {upperFirst(category)}
                         </Button>
@@ -73,24 +76,21 @@ export default function Page() {
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
                                 <h3 className="text-lg font-bold">{event.name}</h3>
                                 <h5 className="">{moment(event.time).format('LT [on] DD/MM/YYYY')}</h5>
-                                <div className="w-full h-1/5 flex flex-row justify-between">
+                                <div className="w-full h-1/5 flex flex-col md:flex-row justify-between">
                                     <div>{currencyFormatter.format(event.eventTickets[0].price)}</div>
                                     <div>{event.eventTickets[0].slots} Participants</div>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    {landing.eventApiResult.isLoading && (
-                        <div className="flex justify-center mt-4">
-                            Loading...
-                        </div>
-                    )}
-                    {landing.searcherState.events.length === 0 && (
-                        <div className="flex justify-center mt-4">
+                    {landing.eventApiResult.isLoading && (<Spinner/>)}
+                    {!landing.eventApiResult.isLoading && landing.searcherState.events.length === 0 && (
+                        <div className="flex justify-center">
                             Empty!
                         </div>
                     )}
                 </div>
+
 
                 {/* Pagination */}
                 <div className="flex justify-center gap-4">
