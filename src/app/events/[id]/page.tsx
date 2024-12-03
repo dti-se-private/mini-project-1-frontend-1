@@ -5,7 +5,7 @@ import {
     FC,
     useEffect,
 } from "react";
-import { Button } from "@nextui-org/react";
+import {Button, Image} from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { eventApi } from "@/src/stores/apis/eventApi";
 import moment from "moment";
@@ -33,10 +33,12 @@ const EventDetail: FC = () => {
     return (
         <div className="font-sans text-gray-900">
             {/* Header Section */}
-            <section className="relative w-full h-auto bg-gray-200">
-                <div className="w-full h-[300px] bg-gray-300 flex justify-center items-center">
-                    <div className="text-gray-400">Event Cover Image</div>
-                </div>
+            <section className="relative w-full flex justify-center">
+                <Image
+                    className="w-full h-[75vh] object-cover"
+                    src={`https://placehold.co/1366x768?text=EventCover`}
+                    alt="hero"
+                />
             </section>
 
             {/* Event Details Section */}
@@ -56,15 +58,8 @@ const EventDetail: FC = () => {
                         </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <span className="material-icons text-gray-600">place</span>
-                        <a
-                            href={ data?.data?.location || "#" }
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
-                        >
-                            View Location
-                        </a>
+                        <span className="material-icons text-gray-600">place:&nbsp;</span>
+                        { data?.data?.location || "#" }
                     </div>
                 </div>
 
