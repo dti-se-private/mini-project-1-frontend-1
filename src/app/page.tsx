@@ -1,6 +1,7 @@
 "use client"
 import {Button, Image, Spinner} from '@nextui-org/react';
 import {useLanding} from '@/src/hooks/useLanding';
+import Link from 'next/link'
 import {upperFirst} from "tiny-case";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Pagination} from "swiper/modules";
@@ -65,7 +66,8 @@ export default function Page() {
             <section className="container flex flex-col justify-center items-center">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8 min-h-[80vh]">
                     {landing.searcherState.events.map((event, index) => (
-                        <div
+                        <Link
+                            href={`/events/${event.id}`}
                             key={index}
                             className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-3/4 md:w-1/4 h-full"
                         >
@@ -87,7 +89,7 @@ export default function Page() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                     {landing.eventApiResult.isLoading && (<Spinner/>)}
                     {!landing.eventApiResult.isLoading && landing.searcherState.events.length === 0 && (
