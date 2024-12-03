@@ -58,28 +58,30 @@ export default function Page() {
     };
 
     return (
-        <div className="container py-12 min-h-[90vh] flex flex-col justify-center items-center">
-            <h1 className="mb-8 text-4xl font-bold">Register Now!</h1>
-            <div
-                className="w-1/3"
-            >
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+            <div className="container flex flex-col justify-center items-center">
+                <h1 className="mb-8 text-4xl font-bold">Register Now!</h1>
+                <div
+                    className="w-2/3 md:w-1/3"
                 >
-                    <Form>
-                        <FormInput name="email" label="Email" type="email"/>
-                        <FormInput name="password" label="Password" type="password"/>
-                        <FormInput name="name" label="Name" type="text"/>
-                        <FormInput name="phone" label="Phone" type="text"/>
-                        <FormInput name="dob" label="Date of Birth" type="date"/>
-                        <FormInput name="referralCode" label="Referral Code" type="text"/>
-                        <Button type="submit" className="w-full">
-                            Register
-                        </Button>
-                    </Form>
-                </Formik>
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
+                    >
+                        <Form>
+                            <FormInput name="email" label="Email" type="email"/>
+                            <FormInput name="password" label="Password" type="password"/>
+                            <FormInput name="name" label="Name" type="text"/>
+                            <FormInput name="phone" label="Phone" type="text"/>
+                            <FormInput name="dob" label="Date of Birth" type="date"/>
+                            <FormInput name="referralCode" label="Referral Code" type="text"/>
+                            <Button type="submit" className="w-full">
+                                Register
+                            </Button>
+                        </Form>
+                    </Formik>
+                </div>
             </div>
         </div>
     )
