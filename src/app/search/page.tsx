@@ -1,5 +1,5 @@
 "use client"
-import {Button, Checkbox, CheckboxGroup, Image} from '@nextui-org/react';
+import {Button, Checkbox, CheckboxGroup, Image, Spinner} from '@nextui-org/react';
 import {useSearch} from "@/src/hooks/useSearch";
 import moment from "moment";
 import {upperFirst} from "tiny-case";
@@ -11,35 +11,36 @@ export default function Page() {
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
-        currencySign: 'accounting'
+        currencySign: 'accounting',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     });
 
     return (
-        <div className="my-8">
+        <div className="my-8 flex flex-col justify-center items-center">
             {/* Filters */}
-            <section className="container flex flex-col justify-center items-center mb-8">
+            <section className="container flex justify-center items-center mb-8">
                 <CheckboxGroup
-                    orientation="horizontal"
                     defaultValue={filters}
                     onChange={(values) => search.setRequest({
                         ...search.searcherState.request,
                         filters: values
                     })}
                 >
-                    {filters.map((value, index) => (
-                        <Checkbox
-                            className="mx-2"
-                            key={index}
-                            value={value}
-                        >
-                            {upperFirst(value)}
-                        </Checkbox>
-                    ))}
+                    <div className="flex flex-wrap justify-center items-center gap-6">
+                        {filters.map((value, index) => (
+                            <Checkbox
+                                key={index}
+                                value={value}
+                            >
+                                {upperFirst(value)}
+                            </Checkbox>
+                        ))}
+                    </div>
                 </CheckboxGroup>
             </section>
 
-            {/* Events */
-            }
+            {/* Events */}
             <section className="container flex flex-col justify-center items-center">
                 <div className="flex flex-wrap justify-center items-center gap-6 mb-8">
                     {search.searcherState.events.map((event, index) => (
@@ -55,20 +56,16 @@ export default function Page() {
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
                                 <h3 className="text-lg font-bold">{event.name}</h3>
                                 <h5 className="">{moment(event.time).format('LT [on] DD/MM/YYYY')}</h5>
-                                <div className="w-full h-1/5 flex flex-row justify-between">
+                                <div className="w-full h-1/5 flex flex-col md:flex-row justify-between">
                                     <div>{currencyFormatter.format(event.eventTickets[0].price)}</div>
                                     <div>{event.eventTickets[0].slots} Participants</div>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    {search.eventApiResult.isLoading && (
-                        <div className="flex justify-center mt-4">
-                            Loading...
-                        </div>
-                    )}
-                    {search.searcherState.events.length === 0 && (
-                        <div className="flex justify-center mt-4">
+                    {search.eventApiResult.isLoading && (<Spinner/>)}
+                    {!search.eventApiResult.isLoading && search.searcherState.events.length === 0 && (
+                        <div className="flex justify-center">
                             Empty!
                         </div>
                     )}

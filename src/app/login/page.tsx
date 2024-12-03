@@ -7,10 +7,12 @@ import FormInput from "@/src/components/FormInput";
 import {Button} from "@nextui-org/react";
 import {useModal} from "@/src/hooks/useModal";
 import Json from "@/src/components/Json";
+import {useRouter} from "next/navigation";
 
 export default function Page() {
     const authentication = useAuthentication();
     const modal = useModal();
+    const router = useRouter();
 
     const initialValues = {
         email: "",
@@ -34,6 +36,7 @@ export default function Page() {
                     header: "Login Succeed",
                     body: <Json value={data ?? {}}/>,
                 })
+                router.push("/");
             })
             .catch((error) => {
                 modal.setContent({
