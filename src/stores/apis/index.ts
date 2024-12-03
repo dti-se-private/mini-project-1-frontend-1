@@ -36,7 +36,6 @@ export const axiosBaseQuery =
             const instance = applyCaseMiddleware(axios.create())
             const store = storeRegistry.getStore()!
             const authenticationState: AuthenticationState = store.getState().authenticationSlice
-
             instance.interceptors.request.use(
                 async config => {
                     if (authenticationState.session?.accessToken) {
