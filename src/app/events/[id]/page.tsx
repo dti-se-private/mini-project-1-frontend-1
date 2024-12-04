@@ -33,16 +33,16 @@ const EventDetail: FC = () => {
     return (
         <div className="font-sans text-black">
             {/* Header Section */}
-            <section className="relative w-full flex justify-center">
+            <section className="relative w-full h-3/4 flex justify-center">
                 <Image
-                    className="w-full h-[75vh] object-cover"
+                    className="w-full object-cover rounded-none"
                     src={`https://placehold.co/1366x768?text=EventCover`}
                     alt="Event Cover"
                 />
             </section>
 
             {/* Event Details Section */}
-            <section className="flex flex-col gap-4 p-6 md:p-10 bg-white">
+            <section className="flex flex-col gap-4 p-6 md:p-10 bg-white container">
                 <h1 className="text-3xl md:text-9xl font-bold md:font-semibold">
                     { data?.data?.name || "Event Name" }
                 </h1>
@@ -51,21 +51,20 @@ const EventDetail: FC = () => {
                 </p>
 
                 {/* Event Details */}
-                <div className="flex flex-col gap-2 mb-6">
+                <div className="flex flex-col gap-2">
                     <div className="flex items-center space-x-2 md:mb-0">
-                        <Icon icon="mdi-light:calendar" />
+                        <Icon icon="mdi-light:calendar" className="h-6 w-6" />
                         <p>
-                            {moment(data?.data?.time).format('dddd, MMMM YYYY [at] HH.mm [UTC]Z')}
+                            {moment(data?.data?.time).format('dddd, DD MMMM YYYY [at] HH.mm [UTC]Z')}
                         </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <Icon icon="mdi-light:map-marker" />
-                        <span className="material-icons">place:&nbsp;</span>
-                        { data?.data?.location || "#" }
+                        <Icon icon="mdi-light:map-marker" className="h-6 w-6" />
+                        <p>{ data?.data?.location || "#" }</p>
                     </div>
                 </div>
 
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-4 items-center mb-3">
                     <Avatar
                         isBordered
                         as="button"
@@ -79,24 +78,19 @@ const EventDetail: FC = () => {
                     </p>
                 </div>
 
-                <div className="flex flex-col bg-gray-100 py-4 gap-4 rounded-lg mb-6 items-center">
+                <div className="flex flex-col w-full bg-gray-100 py-4 gap-4 rounded-lg mb-6 items-center">
                     {/* Pricing and Slots */}
-                    <div className="flex items-center gap-1 md:gap-4 text-sm md:text-base">
-                        <p>
-                            Price <span className="font-bold">
-                        {currencyFormatter.format(data?.data?.eventTickets[0].price || 0) || "free"}
-                        </span>
+                    <div className="flex items-center gap-1 md:gap-4 text-sm md:text-base font-semibold">
+                        <p className="pl-4 md:pl-0">
+                            Price {currencyFormatter.format(data?.data?.eventTickets[0].price || 0) || "free"}
                         </p>
                         <p>•</p>
-                        <p>
-                            <span className="font-bold">{data?.data?.numberOfParticipants || 0}</span> people are
-                            participating
+                        <p className="pl-4 md:pl-0">
+                            {data?.data?.numberOfParticipants || 0} people are participating
                         </p>
                         <p>•</p>
-                        <p>
-                        <span
-                            className="font-bold">{((data?.data?.eventTickets[0].slots || 0) - (data?.data?.numberOfParticipants || 0))}</span> slots
-                            left!
+                        <p className="pl-4 md:pl-0">
+                            {((data?.data?.eventTickets[0].slots || 0) - (data?.data?.numberOfParticipants || 0))} slots left!
                         </p>
                     </div>
 
