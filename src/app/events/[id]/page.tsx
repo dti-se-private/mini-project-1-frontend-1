@@ -13,7 +13,9 @@ const EventDetail: FC = () => {
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
-        currencySign: 'accounting'
+        currencySign: 'accounting',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     });
 
     if (isLoading) {
@@ -53,7 +55,7 @@ const EventDetail: FC = () => {
                     <div className="flex items-center space-x-2 md:mb-0">
                         <Icon icon="mdi-light:calendar" />
                         <p>
-                            {moment(data?.data?.time).format('LT [on] DD/MM/YYYY')}
+                            {moment(data?.data?.time).format('dddd, MMMM YYYY [at] HH.mm [UTC]Z')}
                         </p>
                     </div>
                     <div className="flex items-center space-x-2">
