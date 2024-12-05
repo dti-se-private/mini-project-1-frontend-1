@@ -40,7 +40,7 @@ export interface RetrieveEventResponse {
     organizerAccount: RetrieveOrganizerAccountResponse;
     eventTickets: RetrieveEventTicketResponse[];
     eventVouchers: RetrieveEventVoucherResponse[];
-    numberOfParticipants: number;
+    participantCount: number;
 }
 
 export interface SearchEventRequest {
@@ -71,7 +71,7 @@ export const eventApi = createApi({
                 });
             }
         }),
-        getEventDetails: builder.query<ResponseBody<RetrieveEventResponse>, {id: string}>({
+        getEventDetails: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
             query: ({id: id}) => ({
                 url: `/${id}`,
                 method: "GET"

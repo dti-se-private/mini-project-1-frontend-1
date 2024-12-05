@@ -55,7 +55,7 @@ export default function Page() {
                             />
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
                                 <h3 className="overflow-hidden truncate w-full text-lg font-bold">{event.name}</h3>
-                                <h5 className="overflow-hidden truncate w-full">{moment(event.time).format('LT [on] DD/MM/YYYY')}</h5>
+                                <h5 className="overflow-hidden truncate w-full">{moment(event.time).format('LT [on] DD/MM/YYYY [UTC]Z')}</h5>
                                 <div className="overflow-hidden truncate w-full">{event.location}</div>
                                 <div className="w-full h-1/5 flex justify-between">
                                     <div className="overflow-hidden truncate w-full">

@@ -1,14 +1,14 @@
 'use client';
 import {useParams} from 'next/navigation';
-import {FC} from "react";
-import {Avatar, Button, Image, Spinner} from "@nextui-org/react";
+import {Avatar, Button, Spinner} from "@nextui-org/react";
 import {eventApi} from "@/src/stores/apis/eventApi";
 import {Icon} from "@iconify/react";
 import moment from "moment";
+import Image from "next/image";
 
-const EventDetail: FC = () => {
-    const { id } = useParams() as { id: string };
-    const { data, isLoading } = eventApi.useGetEventDetailsQuery({ id });
+export default function Page() {
+    const {id}: { id: string } = useParams();
+    const {data, isLoading} = eventApi.useGetEventDetailsQuery({id})
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -19,48 +19,53 @@ const EventDetail: FC = () => {
     });
 
     if (isLoading) {
-        return <Spinner />;
+        return (
+            <div className="flex justify-center items-center h-[80vh]">
+                <Spinner/>
+            </div>
+        );
     }
 
     if (!isLoading && !data?.data) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
-                No Event Found!
+                Event not found!
             </div>
         );
     }
 
     return (
-        <div className="font-sans text-black">
-            {/* Header Section */}
-            <section className="relative w-full h-3/4 flex justify-center">
+        <div className="pb-8 flex flex-col justify-center items-center">
+            {/* Hero */}
+            <section className="w-full h-[90vh] relative mb-12">
                 <Image
-                    className="w-full object-cover rounded-none"
-                    src={`https://placehold.co/1366x768?text=EventCover`}
-                    alt="Event Cover"
+                    src={data?.data?.bannerImageUrl ?? "https://placehold.co/1366x768?text=Loading..."}
+                    layout="fill"
+                    objectFit="cover"
+                    alt="Event Banner"
                 />
             </section>
 
-            {/* Event Details Section */}
-            <section className="flex flex-col gap-4 p-6 md:p-10 bg-white container">
-                <h1 className="text-3xl md:text-9xl font-bold md:font-semibold">
-                    { data?.data?.name || "Event Name" }
+            {/* Details */}
+            <section className="container flex flex-col px-12 gap-4 bg-white">
+                <h1 className="text-7xl md:text-8xl font-bold ">
+                    {data?.data?.name}
                 </h1>
                 <p className="text-lg md:text-xl mb-2">
-                    { data?.data?.description || "Event Description" }
+                    {data?.data?.description}
                 </p>
 
-                {/* Event Details */}
+                {/* Event */}
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center space-x-2 md:mb-0">
-                        <Icon icon="mdi-light:calendar" className="h-6 w-6" />
+                        <Icon icon="mdi-light:calendar" className="h-6 w-6"/>
                         <p>
                             {moment(data?.data?.time).format('dddd, DD MMMM YYYY [at] HH.mm [UTC]Z')}
                         </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <Icon icon="mdi-light:map-marker" className="h-6 w-6" />
-                        <p>{ data?.data?.location || "#" }</p>
+                        <Icon icon="mdi-light:map-marker" className="h-6 w-6"/>
+                        <p>{data?.data?.location}</p>
                     </div>
                 </div>
 
@@ -73,24 +78,25 @@ const EventDetail: FC = () => {
                     />
                     <p className="text-sm">By&nbsp;
                         <span className="font-semibold">
-                            {data?.data?.organizerAccount.name || "Organizer Name"}
+                            {data?.data?.organizerAccount.name}
                         </span>
                     </p>
                 </div>
 
                 <div className="flex flex-col w-full bg-gray-100 py-4 gap-4 rounded-lg mb-6 items-center">
                     {/* Pricing and Slots */}
-                    <div className="flex items-center gap-1 md:gap-4 text-sm md:text-base font-semibold">
-                        <p className="pl-4 md:pl-0">
-                            Price {currencyFormatter.format(data?.data?.eventTickets[0].price || 0) || "free"}
+                    <div
+                        className="flex justify-center items-center gap-1 md:gap-4 text-sm md:text-base font-semibold text-center">
+                        <p className="px-4">
+                            Price {data?.data?.eventTickets[0]?.price ? currencyFormatter.format(data?.data?.eventTickets[0]?.price) : "FREE"}
                         </p>
                         <p>•</p>
-                        <p className="pl-4 md:pl-0">
-                            {data?.data?.numberOfParticipants || 0} people are participating
+                        <p className="px-4">
+                            {data?.data?.participantCount} people are participating
                         </p>
                         <p>•</p>
-                        <p className="pl-4 md:pl-0">
-                            {((data?.data?.eventTickets[0].slots || 0) - (data?.data?.numberOfParticipants || 0))} slots left!
+                        <p className="px-4">
+                            {data?.data?.eventTickets[0].slots} slots left!
                         </p>
                     </div>
 
@@ -105,5 +111,3 @@ const EventDetail: FC = () => {
         </div>
     );
 };
-
-export default EventDetail;
