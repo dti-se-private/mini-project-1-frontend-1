@@ -1,25 +1,16 @@
 import {useFormikContext} from "formik";
 import {Input} from "@nextui-org/react";
 
-interface FormInputProps {
-    name: string;
-    label: string;
-    type: string;
-    placeholder?: string;
-}
 
-export default function Component(props: FormInputProps) {
+export default function Component(props) {
     const {isSubmitting, errors, handleChange, handleBlur, values} = useFormikContext();
     const inputId = `${props.label.toLowerCase()}-input`;
 
     return (
         <Input
+            {...props}
             className="mb-6 w-full"
             id={inputId}
-            type={props.type}
-            name={props.name}
-            placeholder={props.placeholder}
-            label={props.label}
             disabled={isSubmitting}
             onChange={handleChange}
             onBlur={handleBlur}

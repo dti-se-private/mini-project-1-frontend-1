@@ -13,6 +13,8 @@ import {eventApi} from "@/src/stores/apis/eventApi";
 import storeRegistry from "@/src/registries/storeRegistry";
 import {searchSlice} from "@/src/stores/slices/searchSlice";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
+import {transactionApi} from "@/src/stores/apis/transactionApi";
+import {transactionSlice} from "@/src/stores/slices/transactionSlice";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -20,9 +22,11 @@ const rootReducer = combineReducers({
     [searcherSlice.reducerPath]: searcherSlice.reducer,
     [searchSlice.reducerPath]: searchSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
+    [transactionSlice.reducerPath]: transactionSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
+    [transactionApi.reducerPath]: transactionApi.reducer,
 })
 
 const createNoopStorage = () => {
@@ -56,7 +60,7 @@ export const store = configureStore({
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             ignoredPaths: [modalSlice.reducerPath],
         },
-    }).concat(eventApi.middleware, authenticationApi.middleware, accountApi.middleware),
+    }).concat(eventApi.middleware, authenticationApi.middleware, accountApi.middleware, transactionApi.middleware),
 })
 
 setupListeners(store.dispatch)
