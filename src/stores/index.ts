@@ -13,6 +13,8 @@ import {eventApi} from "@/src/stores/apis/eventApi";
 import storeRegistry from "@/src/registries/storeRegistry";
 import {searchSlice} from "@/src/stores/slices/searchSlice";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
+import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
+import {organizerEventApi} from "@/src/stores/apis/organizerEventApi";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -23,6 +25,8 @@ const rootReducer = combineReducers({
     [accountApi.reducerPath]: accountApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
+    [organizerEventApi.reducerPath]: organizerEventApi.reducer,
+    [eventManagementSlice.reducerPath]: eventManagementSlice.reducer,
 })
 
 const createNoopStorage = () => {
@@ -56,7 +60,7 @@ export const store = configureStore({
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             ignoredPaths: [modalSlice.reducerPath],
         },
-    }).concat(eventApi.middleware, authenticationApi.middleware, accountApi.middleware),
+    }).concat(eventApi.middleware, organizerEventApi.middleware, authenticationApi.middleware, accountApi.middleware),
 })
 
 setupListeners(store.dispatch)
