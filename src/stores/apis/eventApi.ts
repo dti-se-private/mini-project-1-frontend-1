@@ -10,13 +10,19 @@ export interface RetrieveOrganizerAccountResponse {
     profileImageUrl: string;
 }
 
+
+export interface RetrieveEventTicketFieldResponse {
+    id: string;
+    key: string;
+}
+
 export interface RetrieveEventTicketResponse {
     id: string;
     name: string;
     description: string;
     price: number;
     slots: number;
-    fields: string[];
+    fields: RetrieveEventTicketFieldResponse[];
 }
 
 export interface RetrieveEventVoucherResponse {
@@ -71,7 +77,7 @@ export const eventApi = createApi({
                 });
             }
         }),
-        getEventDetails: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
+        retrieveEvent: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
             query: ({id: id}) => ({
                 url: `/${id}`,
                 method: "GET"

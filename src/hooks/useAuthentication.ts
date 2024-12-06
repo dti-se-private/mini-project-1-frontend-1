@@ -29,7 +29,6 @@ export const useAuthentication = () => {
 
     const login = async (request: LoginByEmailAndPasswordRequest) => {
         const loginApiResult = await loginApiTrigger(request).unwrap();
-
         dispatch(authenticationSlice.actions.login({
             session: loginApiResult.data,
         }));
@@ -45,7 +44,10 @@ export const useAuthentication = () => {
     }
 
     const logout = async () => {
-        const logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
+        let logoutApiResult = undefined;
+        if (state.session) {
+            logoutApiResult = await logoutApiTrigger(state.session).unwrap();
+        }
         dispatch(authenticationSlice.actions.logout({}));
         return logoutApiResult;
     }

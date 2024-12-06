@@ -34,6 +34,7 @@ export const axiosBaseQuery =
     > =>
         async ({url, method, data, params, headers}) => {
             const instance = applyCaseMiddleware(axios.create())
+            const rawInstance = applyCaseMiddleware(axios.create())
             const store = storeRegistry.getStore()!
             const authenticationState: AuthenticationState = store.getState().authenticationSlice
             instance.interceptors.request.use(
@@ -49,22 +50,24 @@ export const axiosBaseQuery =
                     return response
                 },
                 async error => {
-                    const originalRequest = error.config
-                    if (error.response.status === 401 && authenticationState.session?.refreshToken) {
-                        const refreshSessionResponse: AxiosResponse<ResponseBody<Session>> = await instance.request(
-                            {
-                                url: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications/refreshes/session`,
-                                method: 'POST',
-                                data: authenticationState.session,
+                    if (error.response.status === 401) {
+                        if (authenticationState.session) {
+                            const refreshSessionResponse: AxiosResponse<ResponseBody<Session>> = await rawInstance.request(
+                                {
+                                    url: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/authentications/refreshes/session`,
+                                    method: 'POST',
+                                    data: authenticationState.session,
+                                }
+                            )
+                            if (refreshSessionResponse.status === 200 && refreshSessionResponse.data.data) {
+                                store.dispatch(authenticationSlice.actions.refreshSession({session: refreshSessionResponse.data.data}))
+                                error.config.headers.Authorization = `Bearer ${refreshSessionResponse.data.data.accessToken}`
+                                return await rawInstance(error.config)
                             }
-                        )
-                        if (refreshSessionResponse.status === 200) {
-                            store.dispatch(authenticationSlice.actions.refreshSession(refreshSessionResponse.data?.data))
-                            return await instance(originalRequest)
+                        } else {
+                            store.dispatch(authenticationSlice.actions.logout({}))
+                            window.location.href = '/login'
                         }
-                    } else {
-                        // store.dispatch(authenticationSlice.actions.logout({}))
-                        // window.location.href = '/login'
                     }
                     return await Promise.reject(error)
                 }

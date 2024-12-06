@@ -1,5 +1,5 @@
 'use client';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import {Avatar, Button, Spinner} from "@nextui-org/react";
 import {eventApi} from "@/src/stores/apis/eventApi";
 import {Icon} from "@iconify/react";
@@ -8,7 +8,8 @@ import Image from "next/image";
 
 export default function Page() {
     const {id}: { id: string } = useParams();
-    const {data, isLoading} = eventApi.useGetEventDetailsQuery({id})
+    const {data, isLoading} = eventApi.useRetrieveEventQuery({id})
+    const router = useRouter();
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -102,7 +103,10 @@ export default function Page() {
 
                     {/* Call to Action */}
                     <div className="flex justify-center w-full px-4">
-                        <Button className="w-full px-8 py-5 text-white bg-blue-600 hover:bg-blue-700">
+                        <Button
+                            className="w-full px-8 py-5 text-white bg-blue-600 hover:bg-blue-700"
+                            onClick={() => router.push(`/events/${id}/checkout`)}
+                        >
                             Participate
                         </Button>
                     </div>
