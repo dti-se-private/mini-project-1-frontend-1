@@ -1,7 +1,7 @@
 'use client';
 import {Button, Spinner} from "@nextui-org/react";
 import moment from "moment";
-import {Form, Formik, useFormikContext} from "formik";
+import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import * as Yup from "yup";
 import Json from "@/src/components/Json";
@@ -13,20 +13,10 @@ import {
 import {useTransaction} from "@/src/hooks/useTransaction";
 import {useModal} from '@/src/hooks/useModal';
 import Image from "next/image";
-import {useEffect} from "react";
 import _ from "lodash";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
 import {Icon} from "@iconify/react";
-
-export function FormikOnChange({onChange}: { onChange: (values: any) => void }) {
-    const {values} = useFormikContext();
-
-    useEffect(() => {
-        onChange(values);
-    }, [values]);
-
-    return null;
-}
+import FormikListener from "@/src/components/FormikListener";
 
 
 export default function Page() {
@@ -196,7 +186,7 @@ export default function Page() {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <FormikOnChange onChange={handleFormikChange}/>
+                            <FormikListener onChange={handleFormikChange}/>
                             <FormInput name="name" label="Name" type="text"/>
                             <FormInput name="email" label="Email" type="email"/>
                             <FormInput name="phone" label="Phone" type="tel"/>
