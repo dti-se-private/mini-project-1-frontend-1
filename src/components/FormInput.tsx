@@ -1,16 +1,15 @@
 import {useFormikContext} from "formik";
 import {Input} from "@nextui-org/react";
+import {ComponentProps} from "react";
 
 
-export default function Component(props) {
+export default function Component(props: Readonly<ComponentProps<typeof Input>>) {
     const {isSubmitting, errors, handleChange, handleBlur, values} = useFormikContext();
-    const inputId = `${props.label.toLowerCase()}-input`;
 
     return (
         <Input
             {...props}
             className="mb-6 w-full"
-            id={inputId}
             disabled={isSubmitting}
             onChange={handleChange}
             onBlur={handleBlur}
