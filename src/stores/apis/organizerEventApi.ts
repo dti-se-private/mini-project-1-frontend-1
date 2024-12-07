@@ -15,8 +15,10 @@ export interface CreateEventRequest {
     description: string;
     location: string;
     category: string;
-    time: string;
+    time: Date;
     bannerImageUrl: string;
+    price: number;
+    slots: number;
     vouchers: CreateEventVoucherRequest[];
 }
 

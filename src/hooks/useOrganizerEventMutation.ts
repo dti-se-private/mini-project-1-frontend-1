@@ -12,25 +12,24 @@ export const useOrganizerEventsMutation = () => {
     const eventManagementState = useSelector((state: RootState) => state
         .eventManagementSlice);
 
-    const addVoucher = (actionType: string) => {
-        dispatch(eventManagementSlice.actions.addVoucher({actionType}));
+    const refreshUpdateForm = (event: RetrieveEventResponse) => {
+        dispatch(eventManagementSlice.actions.refreshUpdateForm({
+            event: event,
+        }));
     }
 
-    const removeVoucher = (actionType: string, voucherIndex: number) => {
-        dispatch(eventManagementSlice.actions.addVoucher({actionType, voucherIndex}));
-    }
-
-    const resetCreateForm = () => {
-        dispatch(eventManagementSlice.actions.resetCreateForm());
-    }
-
-    const createForm = async (request: CreateEventRequest) => {
+    const createEvent = async (request: CreateEventRequest) => {
         const createEventApiResult = await createEventApiTrigger(request).unwrap();
+        console.log("Creating event...");
         setIsCreatingEvent(false);
         return createEventApiResult;
     }
 
-    const updateForm = async (request: RetrieveEventResponse) => {
+    const setEventId = (eventId: string) => {
+        dispatch(eventManagementSlice.actions.setEventId(eventId));
+    }
+
+    const updateEvent = async (request: RetrieveEventResponse) => {
         const updateEventApiResult = await updateEventApiTrigger(request).unwrap();
 
         dispatch(eventManagementSlice.actions.refreshUpdateForm({
@@ -46,11 +45,10 @@ export const useOrganizerEventsMutation = () => {
 
     return {
         state: eventManagementState,
-        addVoucher,
-        removeVoucher,
-        resetCreateForm,
-        createForm,
-        updateForm,
+        createEvent,
+        updateEvent,
         setIsCreatingEvent,
+        setEventId,
+        refreshUpdateForm,
     };
 }
