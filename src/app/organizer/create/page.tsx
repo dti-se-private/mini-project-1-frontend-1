@@ -8,8 +8,10 @@ import {useOrganizerEventsMutation} from "@/src/hooks/useOrganizerEventMutation"
 import {useRouter} from "next/navigation";
 import {Icon} from "@iconify/react";
 import DateUtils from "@/src/utils/DateUtil";
+import {useModal} from '@/src/hooks/useModal';
 
-export default function EventDetailForm() {
+export default function Page() {
+    const modal = useModal();
     const router = useRouter();
 
     const {
@@ -66,11 +68,15 @@ export default function EventDetailForm() {
                 router.push(`/organizer/${data?.data?.id}`);
             })
             .catch((error) => {
-                console.log(request)
-                console.log(error);
+                modal.setContent({
+                    header: "Create event failed",
+                    body: error.message,
+                })
+                modal.onOpenChange(true)
             })
             .finally(() => {
                 setIsLoading(false);
+                modal.onOpenChange(false)
             });
     };
 

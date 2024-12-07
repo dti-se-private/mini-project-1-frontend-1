@@ -136,7 +136,6 @@ export default function Page() {
             await updateEvent(request);
             refetch();
         } catch (error) {
-            console.log(error);
             modal.setContent({
                 header: 'Update failed',
                 body: error
