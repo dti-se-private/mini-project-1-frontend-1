@@ -1,7 +1,7 @@
 'use client';
 import * as Yup from "yup";
 import {Button, Input, Spinner} from '@nextui-org/react';
-import {FieldArray, Form, Formik} from "formik";
+import {Field, FieldArray, Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {useParams} from 'next/navigation';
 import {
@@ -49,10 +49,12 @@ export default function Page() {
             const updatedVoucher = { ...voucher };
 
             if (updatedVoucher.startedAt) {
-                updatedVoucher.startedAt = DateUtils.addTimezoneOffset(updatedVoucher.startedAt);
+                const date: string = voucher.startedAt.toString();
+                updatedVoucher.startedAt = date.slice(0, 16)
             }
             if (updatedVoucher.endedAt) {
-                updatedVoucher.endedAt = DateUtils.addTimezoneOffset(updatedVoucher.endedAt);
+                const date: string = voucher.endedAt.toString();
+                updatedVoucher.endedAt = date.slice(0, 16)
             }
             return updatedVoucher;
         });
@@ -231,18 +233,24 @@ export default function Page() {
                                                     value="Regular ticket"
                                                 />
                                             </div>
-                                            <FormInput
-                                                key={`ticket-price-${index}`}
-                                                name={`eventTickets[${index}].price`}
-                                                label="Ticket price"
-                                                type="number"
-                                            />
-                                            <FormInput
-                                                key={`ticket-slots-${index}`}
-                                                name={`eventTickets[${index}].slots`}
-                                                label="Ticket Slots"
-                                                type="number"
-                                            />
+                                            <div className="mb-6">
+                                                <Field
+                                                    key={`ticket-price-${index}`}
+                                                    name={`eventTickets[${index}].price`}
+                                                    label="Ticket price"
+                                                    type="number"
+                                                    as={Input}
+                                                />
+                                            </div>
+                                            <div className="mb-6">
+                                                <Field
+                                                    key={`ticket-slots-${index}`}
+                                                    name={`eventTickets[${index}].slots`}
+                                                    label="Ticket Slots"
+                                                    type="number"
+                                                    as={Input}
+                                                />
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -256,42 +264,57 @@ export default function Page() {
                         <FieldArray name="eventVouchers">
                             {({push, remove, form}) => (
                                 <div>
-                                    {form.values.eventVouchers.map((voucher: UpdateEventVoucherResponse, index: number) => (
-                                        <div key={index} className="flex flex-col mb-2">
-                                            <FormInput
+                                {form.values.eventVouchers.map((voucher: UpdateEventVoucherResponse, index: number) => (
+                                    <div key={index} className="flex flex-col mb-2">
+                                        <div className="mb-6">
+                                            <Field
                                                 name={`eventVouchers[${index}].name`}
                                                 label={`Voucher Name ${index + 1}`}
                                                 type="text"
+                                                as={Input}
                                             />
-                                            <FormInput
+                                        </div>
+                                        <div className="mb-6">
+                                            <Field
                                                 name={`eventVouchers[${index}].description`}
                                                 label={`Voucher Description ${index + 1}`}
                                                 type="text"
+                                                as={Input}
                                             />
-                                            <FormInput
+                                        </div>
+                                        <div className="mb-6">
+                                            <Field
                                                 name={`eventVouchers[${index}].variableAmount`}
                                                 label={`Voucher Variable Amount ${(index + 1)}`}
                                                 type="number"
+                                                as={Input}
                                             />
-                                            <FormInput
+                                        </div>
+                                        <div className="mb-6">
+                                            <Field
                                                 name={`eventVouchers[${index}].startedAt`}
                                                 label={`Voucher Start Date ${index + 1}`}
                                                 type="datetime-local"
+                                                as={Input}
                                             />
-                                            <FormInput
+                                        </div>
+                                        <div className="mb-6">
+                                            <Field
                                                 name={`eventVouchers[${index}].endedAt`}
                                                 label={`Voucher End Date ${index + 1}`}
                                                 type="datetime-local"
+                                                as={Input}
                                             />
-                                            <p
-                                                className="flex text-red-400 hover:text-red-500 hover:cursor-pointer items-center align-middle justify-end"
-                                                onClick={() => remove(index)}
-                                            >
-                                                <Icon icon="mdi:trash-can" className="w-4 h-4"/>
-                                                <span>&nbsp;voucher {index + 1}</span>
-                                            </p>
                                         </div>
-                                    ))}
+                                        <p
+                                            className="flex text-red-400 hover:text-red-500 hover:cursor-pointer items-center align-middle justify-end"
+                                            onClick={() => remove(index)}
+                                        >
+                                            <Icon icon="mdi:trash-can" className="w-4 h-4"/>
+                                            <span>&nbsp;voucher {index + 1}</span>
+                                        </p>
+                                    </div>
+                                ))}
                                     <p
                                         className="flex text-blue-400 hover:text-blue-500 hover:cursor-pointer items-center align-middle"
                                         onClick={() => addVoucherField(push)}
