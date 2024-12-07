@@ -4,19 +4,16 @@ import { Button, Input } from '@nextui-org/react';
 import {Form, Formik, FieldArray} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {CreateEventRequest, CreateEventVoucherRequest} from "@/src/stores/apis/organizerEventApi";
-import Json from "@/src/components/Json";
 import {useOrganizerEventsMutation} from "@/src/hooks/useOrganizerEventMutation";
-import {useModal} from "@/src/hooks/useModal";
 import {useRouter} from "next/navigation";
 import {Icon} from "@iconify/react";
+import DateUtils from "@/src/utils/DateUtil";
 
 export default function EventDetailForm() {
-    const modal = useModal();
     const router = useRouter();
 
     const {
-        //state,
-        setIsCreatingEvent,
+        setIsLoading,
         createEvent,
     } = useOrganizerEventsMutation();
 
@@ -25,7 +22,7 @@ export default function EventDetailForm() {
         description: "",
         location: "",
         category: "",
-        time: new Date(),
+        time: "",
         bannerImageUrl: "",
         slots: 0,
         price: 0,
@@ -54,28 +51,26 @@ export default function EventDetailForm() {
         return Yup.object().shape(schemaFields);
     };
 
-    const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
-        setIsCreatingEvent(true);
+    const handleSubmit = async (values: typeof initialValues, actions: { resetForm: () => void; }) => {
+        setIsLoading(true);
         const request: CreateEventRequest = values;
+        request.time = DateUtils.addTimezoneOffset(request.time);
+        request?.vouchers?.map((voucher, index) => {
+            request.vouchers[index].startedAt = DateUtils.addTimezoneOffset(voucher.startedAt);
+            request.vouchers[index].endedAt = DateUtils.addTimezoneOffset(voucher.endedAt);
+        })
 
         return createEvent(request)
             .then((data) => {
-                modal.setContent({
-                    header: "Event was created",
-                    body: <Json value={data.data ?? {}}/>,
-                })
                 actions.resetForm();
                 router.push(`/organizer/${data?.data?.id}`);
             })
             .catch((error) => {
-                modal.setContent({
-                    header: "Event creation failed",
-                    body: <Json value={error}/>,
-                })
+                console.log(request)
+                console.log(error);
             })
             .finally(() => {
-                setIsCreatingEvent(false);
-                //modal.onOpenChange(true);
+                setIsLoading(false);
             });
     };
 
@@ -84,8 +79,8 @@ export default function EventDetailForm() {
             name: "",
             description: "",
             variableAmount: 0,
-            startedAt: new Date(),
-            endedAt: new Date(),
+            startedAt: "",
+            endedAt: "",
         };
 
         push(newVoucher);
@@ -120,7 +115,7 @@ export default function EventDetailForm() {
                         <FormInput
                             name="time"
                             label="Event Time"
-                            type="date"
+                            type="datetime-local"
                         />
                         <FormInput
                             name="location"
@@ -191,12 +186,12 @@ export default function EventDetailForm() {
                                             <FormInput
                                                 name={`vouchers[${index}].startedAt`}
                                                 label={`Voucher Start Date ${index + 1}`}
-                                                type="date"
+                                                type="datetime-local"
                                             />
                                             <FormInput
                                                 name={`vouchers[${index}].endedAt`}
                                                 label={`Voucher End Date ${index + 1}`}
-                                                type="date"
+                                                type="datetime-local"
                                             />
                                             <p
                                                 className="flex text-red-400 hover:text-red-500 hover:cursor-pointer items-center align-middle justify-end"

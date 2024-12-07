@@ -1,13 +1,17 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
-import {RetrieveEventResponse} from "@/src/stores/apis/eventApi";
+import {
+    RetrieveEventResponse,
+    RetrieveEventTicketResponse,
+    RetrieveOrganizerAccountResponse
+} from "@/src/stores/apis/eventApi";
 
 export interface CreateEventVoucherRequest {
     name: string;
     description: string;
     variableAmount: number;
-    startedAt: Date;
-    endedAt: Date;
+    startedAt: string;
+    endedAt: string;
 }
 
 export interface CreateEventRequest {
@@ -15,7 +19,7 @@ export interface CreateEventRequest {
     description: string;
     location: string;
     category: string;
-    time: Date;
+    time: string;
     bannerImageUrl: string;
     price: number;
     slots: number;
@@ -25,6 +29,30 @@ export interface CreateEventRequest {
 export interface SearchOrganizerEventRequest {
     page: number;
     size: number;
+}
+
+export interface UpdateEventVoucherResponse {
+    id: string;
+    code: string;
+    name: string;
+    description: string;
+    variableAmount: number;
+    startedAt: string;
+    endedAt: string;
+}
+
+export interface UpdateEventResponse {
+    id: string;
+    name: string;
+    description: string;
+    location: string;
+    category: string;
+    time: string;
+    bannerImageUrl: string;
+    organizerAccount: RetrieveOrganizerAccountResponse;
+    eventTickets: RetrieveEventTicketResponse[];
+    eventVouchers: UpdateEventVoucherResponse[];
+    participantCount: number;
 }
 
 export const organizerEventApi = createApi({
@@ -46,7 +74,7 @@ export const organizerEventApi = createApi({
                 });
             }
         }),
-        getEventDetails: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
+        getEventDetails: builder.query<ResponseBody<UpdateEventResponse>, { id: string }>({
             query: ({id: id}) => ({
                 url: `/${id}`,
                 method: "GET"
@@ -56,13 +84,13 @@ export const organizerEventApi = createApi({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({
-                    url: "/",
+                    url: "/create",
                     method: "POST",
                     data: args,
                 });
             }
         }),
-        updateEvent: builder.query<ResponseBody<RetrieveEventResponse>, RetrieveEventResponse>({
+        updateEvent: builder.query<ResponseBody<UpdateEventResponse>, RetrieveEventResponse>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({

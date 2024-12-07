@@ -1,8 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {CreateEventRequest, organizerEventApi} from "@/src/stores/apis/organizerEventApi";
+import {CreateEventRequest, organizerEventApi, UpdateEventResponse} from "@/src/stores/apis/organizerEventApi";
 import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
-import {RetrieveEventResponse} from "@/src/stores/apis/eventApi";
 
 export const useOrganizerEventsMutation = () => {
     const dispatch = useDispatch();
@@ -12,7 +11,7 @@ export const useOrganizerEventsMutation = () => {
     const eventManagementState = useSelector((state: RootState) => state
         .eventManagementSlice);
 
-    const refreshUpdateForm = (event: RetrieveEventResponse) => {
+    const refreshUpdateForm = (event: UpdateEventResponse) => {
         dispatch(eventManagementSlice.actions.refreshUpdateForm({
             event: event,
         }));
@@ -20,16 +19,11 @@ export const useOrganizerEventsMutation = () => {
 
     const createEvent = async (request: CreateEventRequest) => {
         const createEventApiResult = await createEventApiTrigger(request).unwrap();
-        console.log("Creating event...");
-        setIsCreatingEvent(false);
+        setIsLoading(false);
         return createEventApiResult;
     }
 
-    const setEventId = (eventId: string) => {
-        dispatch(eventManagementSlice.actions.setEventId(eventId));
-    }
-
-    const updateEvent = async (request: RetrieveEventResponse) => {
+    const updateEvent = async (request: UpdateEventResponse) => {
         const updateEventApiResult = await updateEventApiTrigger(request).unwrap();
 
         dispatch(eventManagementSlice.actions.refreshUpdateForm({
@@ -39,16 +33,15 @@ export const useOrganizerEventsMutation = () => {
         return updateEventApiResult;
     }
 
-    const setIsCreatingEvent = (isCreatingEvent: boolean) => {
-        dispatch(eventManagementSlice.actions.setIsCreatingEvent(isCreatingEvent));
+    const setIsLoading = (isLoading: boolean) => {
+        dispatch(eventManagementSlice.actions.setIsLoading(isLoading));
     }
 
     return {
         state: eventManagementState,
         createEvent,
         updateEvent,
-        setIsCreatingEvent,
-        setEventId,
+        setIsLoading,
         refreshUpdateForm,
     };
 }

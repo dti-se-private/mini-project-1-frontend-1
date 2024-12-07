@@ -1,13 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit"
-import {RetrieveEventResponse} from "@/src/stores/apis/eventApi";
+import {UpdateEventResponse} from "@/src/stores/apis/organizerEventApi";
 
 export interface OrganizerManagementState {
     prevPage: number;
     currentPage: number;
     size: number;
-    eventId?: string;
-    updateForm?: RetrieveEventResponse;
-    isCreatingEvent: boolean;
+    updateForm?: UpdateEventResponse;
+    isLoading: boolean;
 }
 
 export const eventManagementSlice = createSlice({
@@ -16,9 +15,8 @@ export const eventManagementSlice = createSlice({
         prevPage: 0,
         currentPage: 0,
         size: 10,
-        eventId: undefined,
         updateForm: undefined,
-        isCreatingEvent: false,
+        isLoading: false,
     } as OrganizerManagementState,
     reducers: {
         setPage: (state, action) => {
@@ -30,11 +28,8 @@ export const eventManagementSlice = createSlice({
             const {event} = action.payload;
             state.updateForm = event;
         },
-        setIsCreatingEvent: (state, action) => {
-            state.isCreatingEvent = action.payload;
+        setIsLoading: (state, action) => {
+            state.isLoading = action.payload;
         },
-        setEventId: (state, action) => {
-            state.eventId = action.payload;
-        }
     }
 });
