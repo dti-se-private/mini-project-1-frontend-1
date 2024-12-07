@@ -74,8 +74,6 @@ export default function Page() {
             : [] as UpdateEventVoucherResponse[],
     };
 
-    console.log(initialValues)
-
     const validationSchema = () => {
         const schemaFields = {
             name: Yup.string().required("Event name is required."),
@@ -234,12 +232,13 @@ export default function Page() {
                                                 />
                                             </div>
                                             <FormInput
+                                                key={`ticket-price-${index}`}
                                                 name={`eventTickets[${index}].price`}
                                                 label="Ticket price"
                                                 type="number"
-                                                value={form.values.eventTickets[index].price}
                                             />
                                             <FormInput
+                                                key={`ticket-slots-${index}`}
                                                 name={`eventTickets[${index}].slots`}
                                                 label="Ticket Slots"
                                                 type="number"
