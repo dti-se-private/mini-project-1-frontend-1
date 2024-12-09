@@ -31,8 +31,8 @@ export interface RetrieveEventVoucherResponse {
     name: string;
     description: string;
     variableAmount: number;
-    startedAt: Date;
-    endedAt: Date;
+    startedAt: string;
+    endedAt: string;
 }
 
 export interface RetrieveEventResponse {
@@ -55,6 +55,7 @@ export interface SearchEventRequest {
     search: string;
     filters: string[];
 }
+
 
 export const eventApi = createApi({
     reducerPath: "eventApi",

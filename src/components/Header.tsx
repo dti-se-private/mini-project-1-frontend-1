@@ -4,6 +4,7 @@ import {
     Dropdown,
     DropdownItem,
     DropdownMenu,
+    DropdownSection,
     DropdownTrigger,
     Input,
     Navbar,
@@ -89,17 +90,25 @@ export default function Component() {
                                         <p className="font-semibold">{authentication.state.account?.name}</p>
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
-                                    <DropdownItem
-                                        onClick={() => router.push("/profile")}
-                                    >
-                                        Profile
-                                    </DropdownItem>
-                                    <DropdownItem
-                                        color="danger"
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </DropdownItem>
+                                    <DropdownSection showDivider title="Dashboard">
+                                        <DropdownItem href="/participant">
+                                            Participant
+                                        </DropdownItem>
+                                        <DropdownItem href="/organizer">
+                                            Organizer
+                                        </DropdownItem>
+                                    </DropdownSection>
+                                    <DropdownSection title="Account">
+                                        <DropdownItem href="/profile">
+                                            Profile
+                                        </DropdownItem>
+                                        <DropdownItem
+                                            color="danger"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </DropdownItem>
+                                    </DropdownSection>
                                 </>
                             )
                             :
