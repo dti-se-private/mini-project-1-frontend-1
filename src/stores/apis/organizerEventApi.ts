@@ -1,10 +1,14 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
-import {
-    RetrieveEventResponse,
-    RetrieveEventTicketResponse,
-    RetrieveOrganizerAccountResponse
-} from "@/src/stores/apis/eventApi";
+import {RetrieveEventResponse} from "@/src/stores/apis/eventApi";
+
+export interface CreateEventTicketRequest {
+    name: string;
+    description: string;
+    price: number;
+    slots: number;
+    fields: string[];
+}
 
 export interface CreateEventVoucherRequest {
     name: string;
@@ -21,9 +25,8 @@ export interface CreateEventRequest {
     category: string;
     time: string;
     bannerImageUrl: string;
-    price: number;
-    slots: number;
-    vouchers: CreateEventVoucherRequest[];
+    eventTickets: CreateEventTicketRequest[];
+    eventVouchers: CreateEventVoucherRequest[];
 }
 
 export interface SearchOrganizerEventRequest {
@@ -31,7 +34,21 @@ export interface SearchOrganizerEventRequest {
     size: number;
 }
 
-export interface UpdateEventVoucherResponse {
+export interface PatchEventTicketFieldResponse {
+    id: string;
+    key: string;
+}
+
+export interface PatchEventTicketResponse {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    slots: number;
+    fields: PatchEventTicketFieldResponse[];
+}
+
+export interface PatchEventVoucherResponse {
     id: string;
     code: string;
     name: string;
@@ -41,7 +58,7 @@ export interface UpdateEventVoucherResponse {
     endedAt: string;
 }
 
-export interface UpdateEventResponse {
+export interface PatchEventResponse {
     id: string;
     name: string;
     description: string;
@@ -49,10 +66,44 @@ export interface UpdateEventResponse {
     category: string;
     time: string;
     bannerImageUrl: string;
-    organizerAccount: RetrieveOrganizerAccountResponse;
-    eventTickets: RetrieveEventTicketResponse[];
-    eventVouchers: UpdateEventVoucherResponse[];
-    participantCount: number;
+    eventTickets: PatchEventTicketResponse[];
+    eventVouchers: PatchEventVoucherResponse[];
+}
+
+export interface PatchEventTicketFieldRequest {
+    id: string;
+    key: string;
+}
+
+export interface PatchEventTicketRequest {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    slots: number;
+    fields: PatchEventTicketFieldRequest[];
+}
+
+export interface PatchEventVoucherRequest {
+    id: string;
+    code: string;
+    name: string;
+    description: string;
+    variableAmount: number;
+    startedAt: string;
+    endedAt: string;
+}
+
+export interface PatchEventRequest {
+    id: string;
+    name: string;
+    description: string;
+    location: string;
+    category: string;
+    time: string;
+    bannerImageUrl: string;
+    eventTickets: PatchEventTicketRequest[];
+    eventVouchers: PatchEventVoucherRequest[];
 }
 
 export const organizerEventApi = createApi({
@@ -74,7 +125,7 @@ export const organizerEventApi = createApi({
                 });
             }
         }),
-        getEventDetails: builder.query<ResponseBody<UpdateEventResponse>, { id: string }>({
+        getEventDetails: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
             query: ({id: id}) => ({
                 url: `/${id}`,
                 method: "GET"
@@ -84,13 +135,13 @@ export const organizerEventApi = createApi({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({
-                    url: "/create",
+                    url: "",
                     method: "POST",
                     data: args,
                 });
             }
         }),
-        updateEvent: builder.query<ResponseBody<UpdateEventResponse>, RetrieveEventResponse>({
+        patchEvent: builder.query<ResponseBody<RetrieveEventResponse>, PatchEventRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({

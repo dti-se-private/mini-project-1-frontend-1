@@ -11,9 +11,9 @@ export const useOrganizerEvents = () => {
         .eventManagementSlice);
 
     const organizerEventApiResult = organizerEventApi.useGetEventsQuery({
-            page: eventManagementState.currentPage,
-            size: eventManagementState.size
-        });
+        page: eventManagementState.currentPage,
+        size: eventManagementState.size
+    });
 
     const setPage = (page: number) => {
         if (page >= 0) {

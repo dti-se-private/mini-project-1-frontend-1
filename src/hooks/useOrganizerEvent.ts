@@ -1,17 +1,22 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {CreateEventRequest, organizerEventApi, UpdateEventResponse} from "@/src/stores/apis/organizerEventApi";
+import {
+    CreateEventRequest,
+    organizerEventApi,
+    PatchEventRequest,
+    PatchEventResponse
+} from "@/src/stores/apis/organizerEventApi";
 import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
 
-export const useOrganizerEventsMutation = () => {
+export const useOrganizerEvents = () => {
     const dispatch = useDispatch();
     const [createEventApiTrigger] = organizerEventApi.useLazyCreateEventQuery();
-    const [updateEventApiTrigger] = organizerEventApi.useLazyUpdateEventQuery();
+    const [updateEventApiTrigger] = organizerEventApi.useLazyPatchEventQuery();
 
     const eventManagementState = useSelector((state: RootState) => state
         .eventManagementSlice);
 
-    const refreshUpdateForm = (event: UpdateEventResponse) => {
+    const refreshPatchForm = (event: PatchEventResponse) => {
         dispatch(eventManagementSlice.actions.refreshUpdateForm({
             event: event,
         }));
@@ -23,7 +28,7 @@ export const useOrganizerEventsMutation = () => {
         return createEventApiResult;
     }
 
-    const updateEvent = async (request: UpdateEventResponse) => {
+    const patchEvent = async (request: PatchEventRequest) => {
         const updateEventApiResult = await updateEventApiTrigger(request).unwrap();
 
         dispatch(eventManagementSlice.actions.refreshUpdateForm({
@@ -40,8 +45,8 @@ export const useOrganizerEventsMutation = () => {
     return {
         state: eventManagementState,
         createEvent,
-        updateEvent,
+        patchEvent,
         setIsLoading,
-        refreshUpdateForm,
+        refreshUpdateForm: refreshPatchForm,
     };
 }

@@ -34,7 +34,7 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Login Succeed",
-                    body: <Json value={data ?? {}}/>,
+                    body: <Json value={data}/>,
                 })
                 router.push("/");
             })
@@ -53,23 +53,19 @@ export default function Page() {
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
                 <h1 className="mb-8 text-4xl font-bold">Login Now!</h1>
-                <div
-                    className="w-2/3 md:w-1/3"
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
                 >
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
-                    >
-                        <Form>
-                            <FormInput name="email" label="Email" type="email"/>
-                            <FormInput name="password" label="Password" type="password"/>
-                            <Button type="submit" className="w-full">
-                                Login
-                            </Button>
-                        </Form>
-                    </Formik>
-                </div>
+                    <Form className="w-2/3 md:w-1/3">
+                        <FormInput name="email" label="Email" type="email"/>
+                        <FormInput name="password" label="Password" type="password"/>
+                        <Button type="submit" className="w-full">
+                            Login
+                        </Button>
+                    </Form>
+                </Formik>
             </div>
         </div>
     )
