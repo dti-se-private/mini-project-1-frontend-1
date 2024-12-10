@@ -21,9 +21,9 @@ import moment from "moment/moment";
 
 export default function Page() {
     const modal = useModal();
-    const organizerEvents = useOrganizerEvent();
+    const organizerEvent = useOrganizerEvent();
 
-    if (organizerEvents.retrieveEventApiResult.isLoading) {
+    if (organizerEvent.retrieveEventApiResult.isLoading) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
                 <Spinner/>
@@ -31,7 +31,7 @@ export default function Page() {
         );
     }
 
-    if (!organizerEvents.retrieveEventApiResult.isLoading && !organizerEvents.retrieveEventApiResult.data) {
+    if (!organizerEvent.retrieveEventApiResult.isLoading && !organizerEvent.retrieveEventApiResult.data) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
                 Event not found!
@@ -40,15 +40,15 @@ export default function Page() {
     }
 
     const initialValues: PatchEventRequest | RetrieveEventResponse = {
-        id: organizerEvents.eventManagementState.event?.id ?? "",
-        name: organizerEvents.eventManagementState.event?.name ?? "",
-        description: organizerEvents.eventManagementState.event?.description ?? "",
-        time: organizerEvents.eventManagementState.event?.time ?? "",
-        location: organizerEvents.eventManagementState.event?.location ?? "",
-        category: organizerEvents.eventManagementState.event?.category ?? "",
-        bannerImageUrl: organizerEvents.eventManagementState.event?.bannerImageUrl ?? "",
-        eventTickets: organizerEvents.eventManagementState.event?.eventTickets ?? [],
-        eventVouchers: organizerEvents.eventManagementState.event?.eventVouchers ?? [],
+        id: organizerEvent.eventManagementState.event?.id ?? "",
+        name: organizerEvent.eventManagementState.event?.name ?? "",
+        description: organizerEvent.eventManagementState.event?.description ?? "",
+        time: organizerEvent.eventManagementState.event?.time ?? "",
+        location: organizerEvent.eventManagementState.event?.location ?? "",
+        category: organizerEvent.eventManagementState.event?.category ?? "",
+        bannerImageUrl: organizerEvent.eventManagementState.event?.bannerImageUrl ?? "",
+        eventTickets: organizerEvent.eventManagementState.event?.eventTickets ?? [],
+        eventVouchers: organizerEvent.eventManagementState.event?.eventVouchers ?? [],
     };
 
     const validationSchema = Yup.object().shape({
@@ -84,7 +84,8 @@ export default function Page() {
         ),
     });
 
-    const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
         modal.setContent({
             header: "Are you sure?",
             body: (<>
@@ -98,14 +99,14 @@ export default function Page() {
                 </div>
                 <div className="flex gap-2 justify-end">
                     <Button color="danger" onClick={() => modal.onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={() => handleConfirmSubmit(values, actions)}>Confirm</Button>
+                    <Button onClick={() => handleConfirmSubmit(values)}>Confirm</Button>
                 </div>
             </>),
         })
         modal.onOpenChange(true);
     };
 
-    const handleConfirmSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
+    const handleConfirmSubmit = (values: typeof initialValues) => {
         const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const request: PatchEventRequest = {
             ...values,
@@ -117,7 +118,7 @@ export default function Page() {
             }))
         }
 
-        return organizerEvents
+        return organizerEvent
             .patchEvent(request)
             .then((data) => {
                 modal.setContent({

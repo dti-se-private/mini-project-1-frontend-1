@@ -16,6 +16,17 @@ export interface RetrieveOneAccountRequest {
     id: string;
 }
 
+export interface PatchOneAccountRequest {
+    id: string,
+    email: string;
+    password: string;
+    name: string;
+    phone: string;
+    dob: string;
+    referralCode: string;
+    profileImageUrl: string;
+}
+
 export const accountApi = createApi({
     reducerPath: "accountApi",
     baseQuery: axiosBaseQuery({
@@ -28,6 +39,16 @@ export const accountApi = createApi({
                 return baseQuery({
                     url: `/${args.id}`,
                     method: "GET",
+                });
+            }
+        }),
+        patchOneById: builder.mutation<ResponseBody<Account>, PatchOneAccountRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: `/${args.id}`,
+                    method: "PATCH",
+                    data: args,
                 });
             }
         }),

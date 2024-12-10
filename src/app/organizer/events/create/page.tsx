@@ -8,15 +8,15 @@ import {
     CreateEventTicketRequest,
     CreateEventVoucherRequest
 } from "@/src/stores/apis/organizerEventApi";
-import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
 import {Icon} from "@iconify/react";
 import {useModal} from '@/src/hooks/useModal';
 import moment from "moment";
 import Json from "@/src/components/Json";
+import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
 
 export default function Page() {
     const modal = useModal();
-    const organizerEvents = useOrganizerEvent();
+    const organizerEvent = useOrganizerEvent();
 
     const initialValues: CreateEventRequest = {
         name: "",
@@ -75,7 +75,7 @@ export default function Page() {
             }))
         }
 
-        return organizerEvents
+        return organizerEvent
             .createEvent(request)
             .then((data) => {
                 modal.setContent({
