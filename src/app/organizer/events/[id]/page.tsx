@@ -1,28 +1,29 @@
 'use client';
 import * as Yup from "yup";
-import {Button, Input, Spinner} from '@nextui-org/react';
-import {Field, FieldArray, Form, Formik} from "formik";
+import {Button, Spinner} from '@nextui-org/react';
+import {FieldArray, Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import {useParams} from 'next/navigation';
-import {organizerEventApi, PatchEventRequest, PatchEventVoucherResponse,} from "@/src/stores/apis/organizerEventApi";
-import {useOrganizerEvents} from "@/src/hooks/useOrganizerEvent";
+import {
+    PatchEventRequest,
+    PatchEventTicketRequest,
+    PatchEventVoucherRequest
+} from "@/src/stores/apis/organizerEventApi";
+import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
 import {Icon} from "@iconify/react";
-import {RetrieveEventResponse, RetrieveEventTicketResponse,} from "@/src/stores/apis/eventApi";
+import {
+    RetrieveEventResponse,
+    RetrieveEventTicketResponse,
+    RetrieveEventVoucherResponse,
+} from "@/src/stores/apis/eventApi";
 import {useModal} from '@/src/hooks/useModal';
 import Json from "@/src/components/Json";
 import moment from "moment/moment";
 
 export default function Page() {
     const modal = useModal();
-    const {
-        setIsLoading,
-        patchEvent,
-    } = useOrganizerEvents();
+    const organizerEvents = useOrganizerEvent();
 
-    const {id}: { id: string } = useParams();
-    const {data, isLoading} = organizerEventApi.useGetEventDetailsQuery({id});
-
-    if (isLoading) {
+    if (organizerEvents.retrieveEventApiResult.isLoading) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
                 <Spinner/>
@@ -30,7 +31,7 @@ export default function Page() {
         );
     }
 
-    if (!isLoading && !data?.data) {
+    if (!organizerEvents.retrieveEventApiResult.isLoading && !organizerEvents.retrieveEventApiResult.data) {
         return (
             <div className="flex justify-center items-center h-[80vh]">
                 Event not found!
@@ -39,42 +40,49 @@ export default function Page() {
     }
 
     const initialValues: PatchEventRequest | RetrieveEventResponse = {
-        id: data?.data?.id ?? "",
-        name: data?.data?.name ?? "",
-        description: data?.data?.description ?? "",
-        location: data?.data?.location ?? "",
-        category: data?.data?.category ?? "",
-        time: data?.data?.time ?? "",
-        bannerImageUrl: data?.data?.bannerImageUrl ?? "",
-        eventTickets: data?.data?.eventTickets ?? [] as RetrieveEventTicketResponse[],
-        eventVouchers: data?.data?.eventVouchers ?? [] as PatchEventVoucherResponse[],
+        id: organizerEvents.eventManagementState.event?.id ?? "",
+        name: organizerEvents.eventManagementState.event?.name ?? "",
+        description: organizerEvents.eventManagementState.event?.description ?? "",
+        time: organizerEvents.eventManagementState.event?.time ?? "",
+        location: organizerEvents.eventManagementState.event?.location ?? "",
+        category: organizerEvents.eventManagementState.event?.category ?? "",
+        bannerImageUrl: organizerEvents.eventManagementState.event?.bannerImageUrl ?? "",
+        eventTickets: organizerEvents.eventManagementState.event?.eventTickets ?? [],
+        eventVouchers: organizerEvents.eventManagementState.event?.eventVouchers ?? [],
     };
 
-    const validationSchema = () => {
-        const schemaFields = {
-            name: Yup.string().required("Event name is required."),
-            description: Yup.string().required("Description is required."),
-            location: Yup.string().required("Location is required."),
-            category: Yup.string().required("Category is required."),
-            time: Yup.string().required("Time is required."),
-            eventTickets: Yup.array().of(
-                Yup.object({
-                    price: Yup.number().required("Price is required."),
-                    slots: Yup.number().required("Slots is required."),
-                })
-            ),
-            eventVouchers: Yup.array().of(
-                Yup.object({
-                    name: Yup.string().required("Voucher name is required."),
-                    description: Yup.string().required("Description is required."),
-                    variableAmount: Yup.number().required("Variable amount is required."),
-                    startedAt: Yup.date().required("Started at is required."),
-                    endedAt: Yup.date().required("Ended at is required."),
-                })
-            ),
-        };
-        return Yup.object().shape(schemaFields);
-    };
+    const validationSchema = Yup.object().shape({
+        name: Yup.string().required("Event name is required."),
+        description: Yup.string().required("Event description is required."),
+        time: Yup.date().required("Event time is required."),
+        location: Yup.string().required("Event location is required."),
+        category: Yup.string().required("Event category is required."),
+        bannerImageUrl: Yup.string(),
+        eventTickets: Yup.array().of(
+            Yup.object().shape({
+                name: Yup.string().required("Ticket name is required."),
+                description: Yup.string().required("Ticket description is required."),
+                price: Yup.number().required("Ticket price is required.").min(0),
+                slots: Yup.number().required("Ticket slots is required.").min(1),
+                fields: Yup.array().of(
+                    Yup.object().shape({
+                        id: Yup.string().required("Field id is required."),
+                        key: Yup.string().required("Field key is required."),
+                    })
+                )
+            })
+        ),
+        eventVouchers: Yup.array().of(
+            Yup.object().shape({
+                name: Yup.string().required("Voucher name is required."),
+                description: Yup.string().required("Voucher description is required."),
+                code: Yup.string().required("Voucher code is required."),
+                variableAmount: Yup.number().required("Voucher variable amount is required.").min(0).max(1),
+                startedAt: Yup.date().required("Voucher started at is required."),
+                endedAt: Yup.date().required("Voucher ended at is required."),
+            })
+        ),
+    });
 
     const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
         modal.setContent({
@@ -88,8 +96,8 @@ export default function Page() {
                         Once confirmed, changes cannot be undone.
                     </p>
                 </div>
-                <div>
-                    <Button color="danger" onClick={handleCancel}>Cancel</Button>
+                <div className="flex gap-2 justify-end">
+                    <Button color="danger" onClick={() => modal.onOpenChange(false)}>Cancel</Button>
                     <Button onClick={() => handleConfirmSubmit(values, actions)}>Confirm</Button>
                 </div>
             </>),
@@ -98,8 +106,6 @@ export default function Page() {
     };
 
     const handleConfirmSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
-        setIsLoading(true);
-
         const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const request: PatchEventRequest = {
             ...values,
@@ -111,7 +117,8 @@ export default function Page() {
             }))
         }
 
-        return patchEvent(request)
+        return organizerEvents
+            .patchEvent(request)
             .then((data) => {
                 modal.setContent({
                     header: "Update Event Succeed",
@@ -125,17 +132,12 @@ export default function Page() {
                 })
             })
             .finally(() => {
-                setIsLoading(false);
                 modal.onOpenChange(true)
             });
     };
 
-    const handleCancel = () => {
-        modal.onOpenChange(false);
-    };
-
-    const addVoucherField = (push: (voucher: PatchEventVoucherResponse) => void) => {
-        const newVoucher = {
+    const addVoucherField = (push: (voucher: RetrieveEventVoucherResponse) => void) => {
+        push({
             id: "",
             code: "",
             name: "",
@@ -143,176 +145,160 @@ export default function Page() {
             variableAmount: 0,
             startedAt: "",
             endedAt: "",
-        };
-
-        push(newVoucher);
+        });
     };
 
     return (
-        <div className="w-full container mx-auto p-6">
-            {/* Page Header */}
-            <header className="mb-6">
-                <h1 className="text-2xl font-bold">Event Creation</h1>
-            </header>
+        <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
+            <div className="container flex flex-col justify-center items-center">
+                <div className="text-3xl font-bold mb-6">Event Details</div>
+                <Formik
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                    initialValues={initialValues}
+                    enableReinitialize
+                >
+                    <Form className="w-2/3 md:w-2/4 flex flex-col gap-1">
+                        <p className="text-gray-700">Event</p>
+                        <div className="flex flex-col gap-1 mb-3">
+                            <FormInput
+                                name="id"
+                                label="Event Id"
+                                type="text"
+                                isDisabled
+                            />
+                            <FormInput
+                                name="name"
+                                label="Event Name"
+                                type="text"
+                            />
+                            <FormInput
+                                name="description"
+                                label="Event Description"
+                                type="text"
+                            />
+                            <FormInput
+                                name="time"
+                                label="Event Time"
+                                type="datetime-local"
+                            />
+                            <FormInput
+                                name="location"
+                                label="Event Location"
+                                type="text"
+                            />
+                            <FormInput
+                                name="category"
+                                label="Event Category"
+                                type="text"
+                            />
+                            <FormInput
+                                name="bannerImageUrl"
+                                label="Event Banner Image URL"
+                                type="text"
+                            />
+                        </div>
 
-            <Formik
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-                initialValues={initialValues}>
-                {/* Event Form */}
-                <Form className="flex flex-col gap-1 mx-0 md:mx-[20vw]">
-                    {/* Event Details */}
-                    <p className="text-gray-700">Event details</p>
-                    <div className="flex flex-col gap-1 mb-3">
-                        <FormInput
-                            name="name"
-                            label="Event Name"
-                            type="text"
-                        />
-                        <FormInput
-                            name="description"
-                            label="Event Description"
-                            type="text"
-                        />
-                        <FormInput
-                            name="time"
-                            label="Event Time"
-                            type="datetime-local"
-                        />
-                        <FormInput
-                            name="location"
-                            label="Event Location"
-                            type="text"
-                        />
-                        <FormInput
-                            name="category"
-                            label="Event Category"
-                            type="text"
-                        />
-                    </div>
-
-                    {/* Ticket Details */}
-                    <p className="text-gray-700">Ticket details</p>
-                    <div className="flex flex-col gap-1 mb-3">
-                        <FieldArray name="eventTickets">
-                            {({form}) => (
-                                <div>
-                                    {form.values.eventTickets.map((ticket: RetrieveEventTicketResponse, index: number) => (
-                                        <div key={index}>
-                                            <div className="mb-6">
-                                                <Input
+                        <p className="text-gray-700">Ticket</p>
+                        <div className="flex flex-col gap-1 mb-3">
+                            <FieldArray name="eventTickets">
+                                {({form}) => (
+                                    <div>
+                                        {form.values.eventTickets.map((ticket: RetrieveEventTicketResponse | PatchEventTicketRequest, index: number) => (
+                                            <div key={index} className="flex flex-col gap-1 mb-2">
+                                                <FormInput
+                                                    name={`eventTickets.${index}.name`}
                                                     label="Ticket Name"
                                                     type="text"
-                                                    disabled={true}
-                                                    value="Regular"
+                                                    isDisabled
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Input
+                                                <FormInput
+                                                    name={`eventTickets.${index}.description`}
                                                     label="Ticket Description"
                                                     type="text"
-                                                    disabled={true}
-                                                    value="Regular ticket"
+                                                    isDisabled
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Field
-                                                    key={`ticket-price-${index}`}
-                                                    name={`eventTickets[${index}].price`}
-                                                    label="Ticket price"
+                                                <FormInput
+                                                    name={`eventTickets.${index}.price`}
+                                                    label="Ticket Price"
                                                     type="number"
-                                                    as={Input}
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Field
-                                                    key={`ticket-slots-${index}`}
-                                                    name={`eventTickets[${index}].slots`}
+                                                <FormInput
+                                                    name={`eventTickets.${index}.slots`}
                                                     label="Ticket Slots"
                                                     type="number"
-                                                    as={Input}
                                                 />
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </FieldArray>
-                    </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </FieldArray>
+                        </div>
 
-                    {/* Voucher Details */}
-                    <p className="text-gray-700">Voucher details</p>
-                    <div className="flex flex-col gap-1 mb-3">
-                        <FieldArray name="eventVouchers">
-                            {({push, remove, form}) => (
-                                <div>
-                                    {form.values.eventVouchers.map((voucher: PatchEventVoucherResponse, index: number) => (
-                                        <div key={index} className="flex flex-col mb-2">
-                                            <div className="mb-6">
-                                                <Field
-                                                    name={`eventVouchers[${index}].name`}
-                                                    label={`Voucher Name ${index + 1}`}
+                        <p className="text-gray-700">Vouchers</p>
+                        <div className="flex flex-col gap-1 mb-3">
+                            <FieldArray name="eventVouchers">
+                                {({push, remove, form}) => (
+                                    <div>
+                                        {form.values.eventVouchers.map((voucher: RetrieveEventVoucherResponse | PatchEventVoucherRequest, index: number) => (
+                                            <div key={index} className="flex flex-col gap-1 mb-2">
+                                                <FormInput
+                                                    name={`eventVouchers.${index}.name`}
+                                                    label={`Voucher ${index + 1} Name`}
                                                     type="text"
-                                                    as={Input}
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Field
-                                                    name={`eventVouchers[${index}].description`}
-                                                    label={`Voucher Description ${index + 1}`}
+                                                <FormInput
+                                                    name={`eventVouchers.${index}.description`}
+                                                    label={`Voucher ${index + 1} Description`}
                                                     type="text"
-                                                    as={Input}
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Field
-                                                    name={`eventVouchers[${index}].variableAmount`}
-                                                    label={`Voucher Variable Amount ${(index + 1)}`}
+                                                <FormInput
+                                                    name={`eventVouchers.${index}.code`}
+                                                    label={`Voucher ${index + 1} Code`}
+                                                    type="text"
+                                                />
+                                                <FormInput
+                                                    name={`eventVouchers.${index}.variableAmount`}
+                                                    label={`Voucher ${(index + 1)} Variable Amount`}
                                                     type="number"
-                                                    as={Input}
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Field
-                                                    name={`eventVouchers[${index}].startedAt`}
-                                                    label={`Voucher Start Date ${index + 1}`}
+                                                <FormInput
+                                                    name={`eventVouchers.${index}.startedAt`}
+                                                    label={`Voucher ${index + 1} Start Date`}
                                                     type="datetime-local"
-                                                    as={Input}
                                                 />
-                                            </div>
-                                            <div className="mb-6">
-                                                <Field
-                                                    name={`eventVouchers[${index}].endedAt`}
-                                                    label={`Voucher End Date ${index + 1}`}
+                                                <FormInput
+                                                    name={`eventVouchers.${index}.endedAt`}
+                                                    label={`Voucher ${index + 1} End Date`}
                                                     type="datetime-local"
-                                                    as={Input}
                                                 />
+                                                <p
+                                                    className="flex text-red-400 hover:text-red-500 hover:cursor-pointer items-center align-middle justify-end"
+                                                    onClick={() => remove(index)}
+                                                >
+                                                    <Icon icon="mdi:trash-can" className="w-4 h-4"/>
+                                                    <span>&nbsp;voucher {index + 1}</span>
+                                                </p>
                                             </div>
-                                            <p
-                                                className="flex text-red-400 hover:text-red-500 hover:cursor-pointer items-center align-middle justify-end"
-                                                onClick={() => remove(index)}
-                                            >
-                                                <Icon icon="mdi:trash-can" className="w-4 h-4"/>
-                                                <span>&nbsp;voucher {index + 1}</span>
-                                            </p>
-                                        </div>
-                                    ))}
-                                    <p
-                                        className="flex text-blue-400 hover:text-blue-500 hover:cursor-pointer items-center align-middle"
-                                        onClick={() => addVoucherField(push)}
-                                    >
-                                        <Icon icon="mdi:plus" className="w-5 h-5"/>
-                                        <span>&nbsp;voucher</span>
-                                    </p>
-                                </div>
-                            )}
-                        </FieldArray>
-                    </div>
-                    <Button type="submit" className="w-full" color="primary">
-                        Update
-                    </Button>
-                </Form>
-            </Formik>
+                                        ))}
+                                        <p
+                                            className="flex text-blue-400 hover:text-blue-500 hover:cursor-pointer items-center align-middle"
+                                            onClick={() => addVoucherField(push)}
+                                        >
+                                            <Icon icon="mdi:plus" className="w-5 h-5"/>
+                                            <span>&nbsp;voucher</span>
+                                        </p>
+                                    </div>
+                                )}
+                            </FieldArray>
+                        </div>
+
+                        <Button type="submit" className="w-full" color="primary">
+                            Update
+                        </Button>
+                    </Form>
+                </Formik>
+            </div>
         </div>
     );
 };

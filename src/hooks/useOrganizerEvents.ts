@@ -10,7 +10,7 @@ export const useOrganizerEvents = () => {
     const eventManagementState = useSelector((state: RootState) => state
         .eventManagementSlice);
 
-    const organizerEventApiResult = organizerEventApi.useGetEventsQuery({
+    const organizerEventApiResult = organizerEventApi.useRetrieveEventsQuery({
         page: eventManagementState.currentPage,
         size: eventManagementState.size
     });

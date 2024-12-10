@@ -17,8 +17,6 @@ import {transactionApi} from "@/src/stores/apis/transactionApi";
 import {transactionSlice} from "@/src/stores/slices/transactionSlice";
 import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
 import {organizerEventApi} from "@/src/stores/apis/organizerEventApi";
-import {participantApi} from "@/src/stores/apis/participantApi";
-import {participantSlice} from "@/src/stores/slices/participantSlice";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -33,8 +31,6 @@ const rootReducer = combineReducers({
     [transactionApi.reducerPath]: transactionApi.reducer,
     [organizerEventApi.reducerPath]: organizerEventApi.reducer,
     [eventManagementSlice.reducerPath]: eventManagementSlice.reducer,
-    [participantApi.reducerPath]: participantApi.reducer,
-    [participantSlice.reducerPath]: participantSlice.reducer,
 })
 
 const createNoopStorage = () => {
@@ -74,7 +70,7 @@ export const store = configureStore({
         authenticationApi.middleware,
         accountApi.middleware,
         transactionApi.middleware,
-        participantApi.middleware,),
+    ),
 })
 
 setupListeners(store.dispatch)

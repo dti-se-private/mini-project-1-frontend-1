@@ -40,7 +40,7 @@ export const useLanding = () => {
     useEffect(() => {
         const newEvents = eventApiResult.data?.data ?? [];
         dispatch(searcherSlice.actions.setEvents({events: newEvents}));
-    }, [dispatch, eventApiResult.data]);
+    }, [eventApiResult.data]);
 
     useEffect(() => {
         eventApiResult.refetch();
