@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit"
 
-export interface ProfileState {
+export interface ParticipantState {
     feedbackPrevPage: number;
     feedbackCurrentPage: number;
     size: number;
@@ -12,7 +12,7 @@ export const participantSlice = createSlice({
         feedbackPrevPage: 0,
         feedbackCurrentPage: 0,
         size: 10,
-    } as ProfileState,
+    } as ParticipantState,
     reducers: {
         setFeedbackPage: (state, action) => {
             const {prevPage, currentPage} = action.payload;

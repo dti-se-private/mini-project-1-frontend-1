@@ -36,7 +36,7 @@ export interface SearchFeedbacks {
 export const participantApi = createApi({
     reducerPath: "participantApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/profile`
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/participant`
     }),
     endpoints: (builder) => ({
         getFeedbacks: builder.query<ResponseBody<RetrieveAllFeedbackResponse[]>, SearchFeedbacks>({
