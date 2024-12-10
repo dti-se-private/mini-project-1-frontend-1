@@ -1,5 +1,5 @@
 "use client"
-
+import {Spinner} from "@nextui-org/spinner";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
 import {Button} from "@nextui-org/react";
 import moment from "moment";
@@ -30,7 +30,7 @@ export default function Page() {
                         <TableColumn>Date Time</TableColumn>
                         <TableColumn>Actions</TableColumn>
                     </TableHeader>
-                    <TableBody emptyContent="Empty!">
+                    <TableBody emptyContent={organizerEventApiResult.isLoading ? <Spinner/> : "Empty!"}>
                         {(organizerEventApiResult.data?.data ?? []).map((event, index) => (
                             <TableRow key={event.id}>
                                 <TableCell>{index + 1}</TableCell>

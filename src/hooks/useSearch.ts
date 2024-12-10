@@ -40,7 +40,7 @@ export const useSearch = () => {
             newEvents = eventApiResult.data?.data ?? [];
         }
         dispatch(searcherSlice.actions.setEvents({events: newEvents}));
-    }, [dispatch, eventApiResult.data]);
+    }, [eventApiResult.data]);
 
     useEffect(() => {
         eventApiResult.refetch();
@@ -55,7 +55,6 @@ export const useSearch = () => {
         });
         eventApiResult.refetch();
     }, []);
-
 
     return {
         eventApiResult,

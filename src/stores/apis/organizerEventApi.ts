@@ -13,6 +13,7 @@ export interface CreateEventTicketRequest {
 export interface CreateEventVoucherRequest {
     name: string;
     description: string;
+    code: string;
     variableAmount: number;
     startedAt: string;
     endedAt: string;
@@ -32,42 +33,6 @@ export interface CreateEventRequest {
 export interface SearchOrganizerEventRequest {
     page: number;
     size: number;
-}
-
-export interface PatchEventTicketFieldResponse {
-    id: string;
-    key: string;
-}
-
-export interface PatchEventTicketResponse {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    slots: number;
-    fields: PatchEventTicketFieldResponse[];
-}
-
-export interface PatchEventVoucherResponse {
-    id: string;
-    code: string;
-    name: string;
-    description: string;
-    variableAmount: number;
-    startedAt: string;
-    endedAt: string;
-}
-
-export interface PatchEventResponse {
-    id: string;
-    name: string;
-    description: string;
-    location: string;
-    category: string;
-    time: string;
-    bannerImageUrl: string;
-    eventTickets: PatchEventTicketResponse[];
-    eventVouchers: PatchEventVoucherResponse[];
 }
 
 export interface PatchEventTicketFieldRequest {
@@ -112,7 +77,7 @@ export const organizerEventApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/organizer/events`
     }),
     endpoints: (builder) => ({
-        getEvents: builder.query<ResponseBody<RetrieveEventResponse[]>, SearchOrganizerEventRequest>({
+        retrieveEvents: builder.query<ResponseBody<RetrieveEventResponse[]>, SearchOrganizerEventRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
@@ -125,7 +90,7 @@ export const organizerEventApi = createApi({
                 });
             }
         }),
-        getEventDetails: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
+        retrieveEvent: builder.query<ResponseBody<RetrieveEventResponse>, { id: string }>({
             query: ({id: id}) => ({
                 url: `/${id}`,
                 method: "GET"
