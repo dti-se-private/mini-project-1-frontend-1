@@ -50,7 +50,8 @@ export default function Page() {
         voucherCodes: Yup.string(),
     });
 
-    const handleSubmit = (values: typeof initialValues) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
         if (!authentication.state.isLoggedIn) {
             modal.setContent({
                 header: "Login Required",

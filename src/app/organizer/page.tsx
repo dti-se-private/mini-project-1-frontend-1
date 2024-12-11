@@ -2,12 +2,36 @@
 import {Spinner} from "@nextui-org/spinner";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
 import {Button} from "@nextui-org/react";
-import moment from "moment";
 import {useOrganizerEvents} from "@/src/hooks/useOrganizerEvents";
 import Link from "next/link";
+import Json from "@/src/components/Json";
+import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
+import {useModal} from '@/src/hooks/useModal';
 
 export default function Page() {
     const {organizerEventApiResult, eventManagementState, setPage} = useOrganizerEvents();
+    const {deleteEvent} = useOrganizerEvent();
+    const modal = useModal();
+
+    const handleDeleteEvent = (id: string) => {
+        return deleteEvent({id})
+            .then((data) => {
+                modal.setContent({
+                    header: "Delete Event Succeed",
+                    body: <Json value={data}/>,
+                })
+            })
+            .catch((error) => {
+                modal.setContent({
+                    header: "Delete Event Failed",
+                    body: <Json value={error}/>,
+                })
+            })
+            .finally(() => {
+                modal.onOpenChange(true)
+                organizerEventApiResult.refetch();
+            });
+    }
 
     return (
         <div className="py-8 px-12 flex flex-col justify-center items-center min-h-[80vh]">
@@ -28,6 +52,7 @@ export default function Page() {
                         <TableColumn>Event ID</TableColumn>
                         <TableColumn>Name</TableColumn>
                         <TableColumn>Date Time</TableColumn>
+                        <TableColumn>Participant Count</TableColumn>
                         <TableColumn>Actions</TableColumn>
                     </TableHeader>
                     <TableBody emptyContent={organizerEventApiResult.isLoading ? <Spinner/> : "Empty!"}>
@@ -36,13 +61,19 @@ export default function Page() {
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{event.id}</TableCell>
                                 <TableCell>{event.name}</TableCell>
-                                <TableCell>{moment(event.time).format("YYYY-MM-DD HH:mm")}</TableCell>
-                                <TableCell>
+                                <TableCell>{event.time}</TableCell>
+                                <TableCell>{event.participantCount}</TableCell>
+                                <TableCell className="flex gap-4">
                                     <Button
                                         as={Link}
                                         href={`/organizer/events/${event.id}`}
                                     >
                                         Details
+                                    </Button>
+                                    <Button
+                                        onClick={() => handleDeleteEvent(event.id)}
+                                    >
+                                        Delete
                                     </Button>
                                 </TableCell>
                             </TableRow>

@@ -11,6 +11,7 @@ export const useOrganizerEvent = () => {
     const {id: eventId}: { id: string } = useParams();
     const [createEventApiTrigger] = organizerEventApi.useLazyCreateEventQuery();
     const [patchEventApiTrigger] = organizerEventApi.useLazyPatchEventQuery();
+    const [deleteEventApiTrigger] = organizerEventApi.useLazyDeleteEventQuery();
     const retrieveEventApiResult = organizerEventApi.useRetrieveEventQuery({id: eventId});
 
     const eventManagementState = useSelector((state: RootState) => state
@@ -19,6 +20,11 @@ export const useOrganizerEvent = () => {
     const createEvent = async (request: CreateEventRequest) => {
         const createEventApiResult = await createEventApiTrigger(request).unwrap();
         return createEventApiResult;
+    }
+
+    const deleteEvent = async (request: { id: string }) => {
+        const deleteEventApiResult = await deleteEventApiTrigger(request).unwrap();
+        return deleteEventApiResult;
     }
 
     const patchEvent = async (request: PatchEventRequest) => {
@@ -70,6 +76,7 @@ export const useOrganizerEvent = () => {
         eventManagementState,
         retrieveEventApiResult,
         createEvent,
+        deleteEvent,
         patchEvent
     };
 }

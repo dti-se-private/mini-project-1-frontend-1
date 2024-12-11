@@ -32,7 +32,8 @@ export default function Page() {
         referralCode: Yup.string(),
     });
 
-    const handleSubmit = (values: typeof initialValues) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
         const request: PatchOneAccountRequest = {
             id: values.id,
             email: values.email,

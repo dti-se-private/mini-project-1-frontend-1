@@ -24,7 +24,7 @@ export default function Page() {
         location: "",
         category: "",
         time: "",
-        bannerImageUrl: "",
+        bannerImageUrl: "https://placehold.co/1366x768?text=event",
         eventTickets: [{
             name: "Standard Ticket",
             description: "Standard ticket for attending the event.",
@@ -63,7 +63,9 @@ export default function Page() {
         ),
     });
 
-    const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
+
         const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const request: CreateEventRequest = {
             ...values,
