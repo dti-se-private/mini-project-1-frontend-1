@@ -1,24 +1,26 @@
 "use client"
 import * as Yup from "yup";
 import {useAuthentication} from "@/src/hooks/useAuthentication";
-import {RegisterByEmailAndPasswordRequest} from "@/src/stores/apis/authenticationApi";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@nextui-org/react";
 import {useModal} from "@/src/hooks/useModal";
 import Json from "@/src/components/Json";
+import {Account, PatchOneAccountRequest} from "@/src/stores/apis/accountApi";
 
 export default function Page() {
     const authentication = useAuthentication();
     const modal = useModal();
 
-    const initialValues = {
-        email: "",
+    const initialValues: Account | PatchOneAccountRequest = {
+        id: authentication.state.account?.id ?? "",
+        email: authentication.state.account?.email ?? "",
         password: "",
-        name: "",
-        phone: "",
-        dob: new Date(),
-        referralCode: "",
+        name: authentication.state.account?.name ?? "",
+        phone: authentication.state.account?.phone ?? "",
+        dob: authentication.state.account?.dob ?? "",
+        profileImageUrl: authentication.state.account?.profileImageUrl ?? "",
+        referralCode: authentication.state.account?.referralCode ?? "",
     };
 
     const validationSchema = Yup.object().shape({
@@ -32,25 +34,27 @@ export default function Page() {
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
         actions.setSubmitting(false);
-        const request: RegisterByEmailAndPasswordRequest = {
+        const request: PatchOneAccountRequest = {
+            id: values.id,
             email: values.email,
             password: values.password,
             name: values.name,
             phone: values.phone,
             dob: new Date(values.dob).toISOString(),
-            referralCode: values.referralCode === "" ? null : values.referralCode,
+            profileImageUrl: values.profileImageUrl,
+            referralCode: values.referralCode,
         }
         return authentication
-            .register(request)
+            .patchAccount(request)
             .then((data) => {
                 modal.setContent({
-                    header: "Register Succeed",
+                    header: "Update Succeed",
                     body: <Json value={data}/>,
                 })
             })
             .catch((error) => {
                 modal.setContent({
-                    header: "Register Failed",
+                    header: "Update Failed",
                     body: <Json value={error}/>,
                 })
             }).finally(() => {
@@ -61,21 +65,24 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
-                <h1 className="mb-8 text-4xl font-bold">Register Now!</h1>
+                <h1 className="mb-8 text-4xl font-bold">Profile</h1>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
+                    enableReinitialize
                 >
                     <Form className="w-2/3 md:w-1/3">
+                        <FormInput name="id" label="Id" type="text" isDisabled/>
                         <FormInput name="email" label="Email" type="email"/>
                         <FormInput name="password" label="Password" type="password"/>
                         <FormInput name="name" label="Name" type="text"/>
                         <FormInput name="phone" label="Phone" type="text"/>
                         <FormInput name="dob" label="Date of Birth" type="date"/>
-                        <FormInput name="referralCode" label="Referral Code" type="text"/>
+                        <FormInput name="profileImageUrl" label="Profile Image URL" type="text"/>
+                        <FormInput name="referralCode" label="Referral Code" type="text" isDisabled/>
                         <Button type="submit" className="w-full">
-                            Register
+                            Update
                         </Button>
                     </Form>
                 </Formik>

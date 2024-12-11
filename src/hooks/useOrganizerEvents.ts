@@ -10,10 +10,10 @@ export const useOrganizerEvents = () => {
     const eventManagementState = useSelector((state: RootState) => state
         .eventManagementSlice);
 
-    const organizerEventApiResult = organizerEventApi.useGetEventsQuery({
-            page: eventManagementState.currentPage,
-            size: eventManagementState.size
-        });
+    const organizerEventApiResult = organizerEventApi.useRetrieveEventsQuery({
+        page: eventManagementState.currentPage,
+        size: eventManagementState.size
+    });
 
     const setPage = (page: number) => {
         if (page >= 0) {

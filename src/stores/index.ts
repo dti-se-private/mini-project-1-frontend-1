@@ -69,7 +69,8 @@ export const store = configureStore({
         organizerEventApi.middleware,
         authenticationApi.middleware,
         accountApi.middleware,
-        transactionApi.middleware),
+        transactionApi.middleware,
+    ),
 })
 
 setupListeners(store.dispatch)

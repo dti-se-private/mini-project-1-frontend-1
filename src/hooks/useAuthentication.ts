@@ -7,8 +7,9 @@ import {
     Session
 } from "@/src/stores/apis/authenticationApi";
 import {authenticationSlice} from "@/src/stores/slices/authenticationSlice";
-import {accountApi, RetrieveOneAccountRequest} from "@/src/stores/apis/accountApi";
+import {accountApi, PatchOneAccountRequest, RetrieveOneAccountRequest} from "@/src/stores/apis/accountApi";
 import {useEffect} from "react";
+import moment from "moment";
 
 export const useAuthentication = () => {
     const dispatch = useDispatch();
@@ -17,14 +18,43 @@ export const useAuthentication = () => {
     const [registerApiTrigger] = authenticationApi.useRegisterByEmailAndPasswordMutation();
     const [logoutApiTrigger] = authenticationApi.useLazyLogoutQuery();
     const [refreshSessionApiTrigger] = authenticationApi.useLazyRefreshSessionQuery();
-    const [accountApiTrigger] = accountApi.useLazyRetrieveOneByIdQuery();
+    const [retrieveAccountApiTrigger] = accountApi.useLazyRetrieveOneByIdQuery();
+    const [patchAccountApiTrigger] = accountApi.usePatchOneByIdMutation();
 
     const retrieveAccount = async (request: RetrieveOneAccountRequest) => {
-        const accountApiResult = await accountApiTrigger(request).unwrap();
-        dispatch(authenticationSlice.actions.setAccount({
-            account: accountApiResult.data,
-        }))
-        return accountApiResult;
+        const retrieveAccountApiResult = await retrieveAccountApiTrigger(request).unwrap();
+        const values = retrieveAccountApiResult.data;
+        if (values) {
+            dispatch(authenticationSlice.actions.setAccount({
+                account: {
+                    ...values,
+                    dob: moment(values.dob).format('YYYY-MM-DD'),
+                },
+            }));
+        } else {
+            dispatch(authenticationSlice.actions.setAccount({
+                account: undefined,
+            }));
+        }
+        return retrieveAccountApiResult;
+    }
+
+    const patchAccount = async (request: PatchOneAccountRequest) => {
+        const patchAccountApiResult = await patchAccountApiTrigger(request).unwrap();
+        const values = patchAccountApiResult.data;
+        if (values) {
+            dispatch(authenticationSlice.actions.setAccount({
+                account: {
+                    ...values,
+                    dob: moment(values.dob).format('YYYY-MM-DD'),
+                },
+            }));
+        } else {
+            dispatch(authenticationSlice.actions.setAccount({
+                account: undefined,
+            }));
+        }
+        return patchAccountApiResult;
     }
 
     const login = async (request: LoginByEmailAndPasswordRequest) => {
@@ -74,5 +104,6 @@ export const useAuthentication = () => {
         register,
         logout,
         refreshSession,
+        patchAccount,
     };
 }

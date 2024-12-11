@@ -50,7 +50,8 @@ export default function Page() {
         voucherCodes: Yup.string(),
     });
 
-    const handleSubmit = (values: typeof initialValues) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
         if (!authentication.state.isLoggedIn) {
             modal.setContent({
                 header: "Login Required",
@@ -179,26 +180,24 @@ export default function Page() {
                     <div className="text-6xl font-bold">Order</div>
                     <div>All fields are required for ticket orders.</div>
                 </div>
-                <div className="w-2/3">
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
-                    >
-                        <Form>
-                            <FormikListener onChange={handleFormikChange}/>
-                            <FormInput name="name" label="Name" type="text"/>
-                            <FormInput name="email" label="Email" type="email"/>
-                            <FormInput name="phone" label="Phone" type="tel"/>
-                            <FormInput name="dob" label="Date of Birth" type="date"/>
-                            <FormInput name="points" label="Points" type="number"/>
-                            <FormInput name="voucherCodes" label="Voucher Codes" type="text"/>
-                            <Button type="submit" className="mt-4 w-full">
-                                Checkout
-                            </Button>
-                        </Form>
-                    </Formik>
-                </div>
+                <Formik
+                    initialValues={initialValues}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                >
+                    <Form className="w-2/3">
+                        <FormikListener onChange={handleFormikChange}/>
+                        <FormInput name="name" label="Name" type="text"/>
+                        <FormInput name="email" label="Email" type="email"/>
+                        <FormInput name="phone" label="Phone" type="tel"/>
+                        <FormInput name="dob" label="Date of Birth" type="date"/>
+                        <FormInput name="points" label="Points" type="number"/>
+                        <FormInput name="voucherCodes" label="Voucher Codes" type="text"/>
+                        <Button type="submit" className="mt-4 w-full">
+                            Checkout
+                        </Button>
+                    </Form>
+                </Formik>
             </section>
 
             <section

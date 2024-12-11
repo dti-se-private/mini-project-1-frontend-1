@@ -10,7 +10,6 @@ export interface RetrieveOrganizerAccountResponse {
     profileImageUrl: string;
 }
 
-
 export interface RetrieveEventTicketFieldResponse {
     id: string;
     key: string;
@@ -31,8 +30,20 @@ export interface RetrieveEventVoucherResponse {
     name: string;
     description: string;
     variableAmount: number;
-    startedAt: Date;
-    endedAt: Date;
+    startedAt: string;
+    endedAt: string;
+}
+
+export interface RetrieveEventParticipantFieldResponse {
+    key: string
+    value: string
+}
+
+export interface RetrieveEventParticipantResponse {
+    accountId: string
+    transactionId: string
+    eventTicketId: string
+    fields: RetrieveEventParticipantFieldResponse[]
 }
 
 export interface RetrieveEventResponse {
@@ -46,6 +57,7 @@ export interface RetrieveEventResponse {
     organizerAccount: RetrieveOrganizerAccountResponse;
     eventTickets: RetrieveEventTicketResponse[];
     eventVouchers: RetrieveEventVoucherResponse[];
+    eventParticipants: RetrieveEventParticipantResponse[];
     participantCount: number;
 }
 
