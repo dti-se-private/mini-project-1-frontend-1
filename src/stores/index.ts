@@ -16,6 +16,7 @@ import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {transactionApi} from "@/src/stores/apis/transactionApi";
 import {transactionSlice} from "@/src/stores/slices/transactionSlice";
 import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
+import {statisticApi} from "@/src/stores/apis/statisticApi";
 import {organizerEventApi} from "@/src/stores/apis/organizerEventApi";
 
 const rootReducer = combineReducers({
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     [accountApi.reducerPath]: accountApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
+    [statisticApi.reducerPath]: statisticApi.reducer,
     [transactionApi.reducerPath]: transactionApi.reducer,
     [organizerEventApi.reducerPath]: organizerEventApi.reducer,
     [eventManagementSlice.reducerPath]: eventManagementSlice.reducer,
@@ -70,6 +72,7 @@ export const store = configureStore({
         authenticationApi.middleware,
         accountApi.middleware,
         transactionApi.middleware,
+        statisticApi.middleware,
     ),
 })
 
