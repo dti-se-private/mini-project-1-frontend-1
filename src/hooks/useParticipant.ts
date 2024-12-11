@@ -4,7 +4,7 @@ import {useEffect} from "react";
 import {CreateFeedbackRequest, participantApi} from "@/src/stores/apis/participantApi";
 import {participantSlice} from "@/src/stores/slices/participantSlice";
 
-export const useProfile = () => {
+export const useParticipant = () => {
     const dispatch = useDispatch();
     const state = useSelector((state: RootState) => state.profileSlice);
 

@@ -19,6 +19,7 @@ import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
 import {organizerEventApi} from "@/src/stores/apis/organizerEventApi";
 import {participantSlice} from "@/src/stores/slices/participantSlice";
 import {participantApi} from "@/src/stores/apis/participantApi";
+import {feedbackModalSlice} from "@/src/stores/slices/feedbackModalSlice";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
     [searcherSlice.reducerPath]: searcherSlice.reducer,
     [searchSlice.reducerPath]: searchSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
+    [feedbackModalSlice.reducerPath]: feedbackModalSlice.reducer,
     [transactionSlice.reducerPath]: transactionSlice.reducer,
     [participantSlice.reducerPath]: participantSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,

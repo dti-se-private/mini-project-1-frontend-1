@@ -3,6 +3,7 @@ import type {Metadata} from "next";
 import "./globals.scss";
 import Header from "@/src/components/Header";
 import Modal from "@/src/components/Modal";
+import FeedbackModal from "@/src/components/FeedbackModal";
 import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function Layout(
         <body>
         <RootProvider>
             <Modal/>
+            <FeedbackModal/>
             <Header/>
             {children}
             <Footer/>

@@ -3,15 +3,24 @@
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
 import {Button} from "@nextui-org/react";
 import moment from "moment";
-import {useProfile} from "@/src/hooks/useProfile";
-import {RetrieveAllFeedbackResponse, RetrieveFeedbackResponse} from "@/src/stores/apis/participantApi";
-import {useModal} from "@/src/hooks/useModal";
+import {useParticipant} from "@/src/hooks/useParticipant";
+import {
+    RetrieveAllFeedbackResponse,
+    RetrieveFeedbackResponse
+} from "@/src/stores/apis/participantApi";
+import {useFeedbackModal} from "@/src/hooks/useFeedbackModal";
 
 export default function Page() {
-    const profile = useProfile();
-    const modal = useModal();
+    const participant = useParticipant();
+    const modal = useFeedbackModal();
 
     const handleCheckFeedback = (trx: RetrieveAllFeedbackResponse) => {
+        modal.setContent({
+            header: 'Feedback',
+            body: 'Feedback',
+            bodyType: 'FeedbackModalBody',
+        });
+        modal.setTransaction(trx);
         modal.onOpenChange(true);
     }
 
@@ -37,7 +46,7 @@ export default function Page() {
                         <TableColumn>Actions</TableColumn>
                     </TableHeader>
                     <TableBody emptyContent="Empty!">
-                        {(profile.feedbackApiResult?.data?.data ?? []).map((feedback, index) => (
+                        {(participant.feedbackApiResult?.data?.data ?? []).map((feedback, index) => (
                             <TableRow key={'feedback'+index}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{feedback.transactionId}</TableCell>
@@ -67,16 +76,16 @@ export default function Page() {
 
                 <div className="flex justify-center gap-4 mt-4">
                     <Button
-                        onClick={() => profile.setFeedbackPage(profile.state.feedbackCurrentPage - 1)}
-                        disabled={profile.state.feedbackCurrentPage === 0}
+                        onClick={() => participant.setFeedbackPage(participant.state.feedbackCurrentPage - 1)}
+                        disabled={participant.state.feedbackCurrentPage === 0}
                     >
                         {'<'}
                     </Button>
                     <Button>
-                        {profile.state.feedbackCurrentPage + 1}
+                        {participant.state.feedbackCurrentPage + 1}
                     </Button>
                     <Button
-                        onClick={() => profile.setFeedbackPage(profile.state.feedbackCurrentPage + 1)}
+                        onClick={() => participant.setFeedbackPage(participant.state.feedbackCurrentPage + 1)}
                     >
                         {'>'}
                     </Button>
