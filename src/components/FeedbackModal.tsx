@@ -18,7 +18,7 @@ export default function Component() {
                 return (
                     <>
                         <div>Are you sure you want to delete this feedback?</div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 justify-end">
                             <Button
                                 color="danger"
                                 onClick={() => {

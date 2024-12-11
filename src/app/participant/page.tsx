@@ -54,6 +54,93 @@ export default function Page() {
         <div className="container py-8 px-12 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="w-full flex flex-col justify-center items-between">
                 <div className="flex items-center justify-between mb-6">
+                    <div className="text-2xl font-bold">Points</div>
+                </div>
+
+                <Table className="min-h-[50vh] w-full text-left"
+                       aria-label="Point Table">
+                    <TableHeader className="bg-gray-300">
+                        <TableColumn>#</TableColumn>
+                        <TableColumn>Amount</TableColumn>
+                        <TableColumn>Ended At</TableColumn>
+                    </TableHeader>
+                    <TableBody emptyContent="Empty!">
+                        {(participant.pointApiResult?.data?.data ?? []).map((point, index) => (
+                            <TableRow key={'point' + index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{point.fixedAmount}</TableCell>
+                                <TableCell>{moment(point.endedAt).format("YYYY-MM-DD HH:mm [UTC]Z")}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+
+                <div className="flex justify-center gap-4 mt-4">
+                    <Button
+                        onClick={() => participant.setPointPage(participant.state.pointCurrentPage - 1)}
+                        disabled={participant.state.pointCurrentPage === 0}
+                    >
+                        {'<'}
+                    </Button>
+                    <Button>
+                        {participant.state.pointCurrentPage + 1}
+                    </Button>
+                    <Button
+                        onClick={() => participant.setPointPage(participant.state.pointCurrentPage + 1)}
+                    >
+                        {'>'}
+                    </Button>
+                </div>
+
+                <br/>
+                <div className="flex items-center justify-between mb-6">
+                    <div className="text-2xl font-bold">Vouchers</div>
+                </div>
+
+                <Table className="min-h-[50vh] w-full text-left"
+                       aria-label="Voucher Table">
+                    <TableHeader className="bg-gray-300">
+                        <TableColumn>#</TableColumn>
+                        <TableColumn>Name</TableColumn>
+                        <TableColumn>Description</TableColumn>
+                        <TableColumn>Code</TableColumn>
+                        <TableColumn>Amount</TableColumn>
+                        <TableColumn>Ended At</TableColumn>
+                    </TableHeader>
+                    <TableBody emptyContent="Empty!">
+                        {(participant.voucherApiResult?.data?.data ?? []).map((voucher, index) => (
+                            <TableRow key={'point' + index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{voucher.name}</TableCell>
+                                <TableCell>{voucher.description}</TableCell>
+                                <TableCell>{voucher.code}</TableCell>
+                                <TableCell>{voucher.variableAmount * 100}%</TableCell>
+                                <TableCell>{moment(voucher.endedAt).format("YYYY-MM-DD HH:mm [UTC]Z")}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+
+                <div className="flex justify-center gap-4 mt-4">
+                    <Button
+                        onClick={() => participant.setVoucherPage(participant.state.voucherCurrentPage - 1)}
+                        disabled={participant.state.voucherCurrentPage === 0}
+                    >
+                        {'<'}
+                    </Button>
+                    <Button>
+                        {participant.state.voucherCurrentPage + 1}
+                    </Button>
+                    <Button
+                        onClick={() => participant.setVoucherPage(participant.state.voucherCurrentPage + 1)}
+                    >
+                        {'>'}
+                    </Button>
+                </div>
+
+                <br/>
+
+                <div className="flex items-center justify-between mb-6">
                     <div className="text-2xl font-bold">Feedbacks</div>
                 </div>
 
@@ -69,7 +156,7 @@ export default function Page() {
                     </TableHeader>
                     <TableBody emptyContent="Empty!">
                         {(participant.feedbackApiResult?.data?.data ?? []).map((feedback, index) => (
-                            <TableRow key={'feedback'+index}>
+                            <TableRow key={'feedback' + index}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>{feedback.transactionId}</TableCell>
                                 <TableCell>{feedback.eventId}</TableCell>
@@ -83,7 +170,7 @@ export default function Page() {
                                             >
                                                 Delete
                                             </Button>)
-                                    : (
+                                        : (
                                             <Button
                                                 color="primary"
                                                 onClick={() => handleCheckFeedback(feedback)}

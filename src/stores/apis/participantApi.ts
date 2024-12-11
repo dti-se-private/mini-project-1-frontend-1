@@ -1,11 +1,24 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
 
+export interface RetrieveAllPointResponse {
+    fixedAmount: number;
+    endedAt: Date;
+}
+
+export interface RetrieveAllVoucherResponse {
+    name: string;
+    description: string;
+    code: string;
+    variableAmount: number;
+    endedAt: Date;
+}
+
 export interface RetrieveAllFeedbackResponse {
     transactionId: string;
     eventId: string;
     eventName: string;
-    time: string;
+    time: Date;
     feedback: RetrieveFeedbackResponse;
 }
 
@@ -28,7 +41,7 @@ export interface CreateFeedbackResponse {
     review: string;
 }
 
-export interface SearchFeedbacks {
+export interface SearchRequest {
     page: number;
     size: number;
 }
@@ -39,7 +52,33 @@ export const participantApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/participant`
     }),
     endpoints: (builder) => ({
-        getFeedbacks: builder.query<ResponseBody<RetrieveAllFeedbackResponse[]>, SearchFeedbacks>({
+        getPoints: builder.query<ResponseBody<RetrieveAllPointResponse[]>, SearchRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`
+                ];
+                return baseQuery({
+                    url: `/points?${queryParams.join("&")}`,
+                    method: "GET"
+                });
+            }
+        }),
+        getVouchers: builder.query<ResponseBody<RetrieveAllVoucherResponse[]>, SearchRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`
+                ];
+                return baseQuery({
+                    url: `/vouchers?${queryParams.join("&")}`,
+                    method: "GET"
+                });
+            }
+        }),
+        getFeedbacks: builder.query<ResponseBody<RetrieveAllFeedbackResponse[]>, SearchRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [

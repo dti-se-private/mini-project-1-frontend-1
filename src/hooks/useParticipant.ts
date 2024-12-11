@@ -12,6 +12,14 @@ export const useParticipant = () => {
         page: state.feedbackCurrentPage,
         size: state.size,
     })
+    const pointApiResult = participantApi.useGetPointsQuery({
+        page: state.pointCurrentPage,
+        size: state.size,
+    })
+    const voucherApiResult = participantApi.useGetVouchersQuery({
+        page: state.voucherCurrentPage,
+        size: state.size,
+    })
     const [createFeedbackApiTrigger, createFeedbackApiResult] = participantApi.useCreateFeedbackMutation();
     const [deleteFeedbackApiTrigger, deleteFeedbackApiResult] = participantApi.useDeleteFeedbackMutation();
 
@@ -30,18 +38,42 @@ export const useParticipant = () => {
             }));
         }
     }
+    const setPointPage = (page: number) => {
+        if (page >= 0) {
+            dispatch(participantSlice.actions.setPointPage({
+                currentPage: page
+            }));
+        }
+    }
+    const setVoucherPage = (page: number) => {
+        if (page >= 0) {
+            dispatch(participantSlice.actions.setVoucherPage({
+                currentPage: page
+            }));
+        }
+    }
 
     useEffect(() => {
         feedbackApiResult.refetch();
     }, [state.feedbackCurrentPage]);
+    useEffect(() => {
+        pointApiResult.refetch();
+    }, [state.pointCurrentPage]);
+    useEffect(() => {
+        voucherApiResult.refetch();
+    }, [state.voucherCurrentPage]);
 
     return {
         state,
         feedbackApiResult,
+        pointApiResult,
+        voucherApiResult,
         createFeedback,
         createFeedbackApiResult,
         deleteFeedback,
         deleteFeedbackApiResult,
         setFeedbackPage,
+        setPointPage,
+        setVoucherPage,
     };
 }
