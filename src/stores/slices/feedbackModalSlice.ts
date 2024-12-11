@@ -9,6 +9,7 @@ export interface ModalState {
     bodyType?: string;
     transaction?: RetrieveAllFeedbackResponse;
     feedbackRequest?: CreateFeedbackRequest;
+    feedbackId?: string;
 }
 
 export const feedbackModalSlice = createSlice({
@@ -20,6 +21,7 @@ export const feedbackModalSlice = createSlice({
         bodyType: undefined,
         transaction: undefined,
         feedbackRequest: undefined,
+        feedbackId: undefined,
     } as ModalState,
     reducers: {
         setContent: (state, action) => {
@@ -36,6 +38,9 @@ export const feedbackModalSlice = createSlice({
         },
         setTransaction: (state, action) => {
             state.transaction = action.payload
+        },
+        setFeedbackId: (state, action) => {
+            state.feedbackId = action.payload;
         }
     }
 });

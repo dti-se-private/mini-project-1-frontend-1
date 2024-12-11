@@ -1,5 +1,5 @@
 "use client"
-import {Modal, ModalBody, ModalContent, ModalHeader} from "@nextui-org/react";
+import {Button, Modal, ModalBody, ModalContent, ModalHeader} from "@nextui-org/react";
 import {useFeedbackModal} from "@/src/hooks/useFeedbackModal";
 import FeedbackModalBody from "@/src/components/FeedbackModalBody";
 
@@ -7,14 +7,40 @@ export default function Component() {
     const {
         state,
         onOpenChange,
+        setFeedbackId,
     } = useFeedbackModal();
 
     const renderBody = () => {
-        if (state.bodyType === "FeedbackModalBody") {
-            return (<FeedbackModalBody />);
+        switch (state.bodyType) {
+            case "FeedbackModalBody":
+                return (<FeedbackModalBody />);
+            case "DeleteFeedback":
+                return (
+                    <>
+                        <div>Are you sure you want to delete this feedback?</div>
+                        <div className="flex gap-4">
+                            <Button
+                                color="danger"
+                                onClick={() => {
+                                    if (state.transaction?.feedback.id) {
+                                        setFeedbackId(state.transaction.feedback.id);
+                                        onOpenChange(false);
+                                    }
+                                }}
+                            >
+                                Yes
+                            </Button>
+                            <Button
+                                onClick={() => onOpenChange(false)}
+                            >
+                                No
+                            </Button>
+                        </div>
+                    </>
+                );
+            default:
+                return state.body || null;
         }
-
-        return state.body || null;
     };
 
     return (
@@ -28,7 +54,7 @@ export default function Component() {
                 {() => (
                     <>
                         <ModalHeader className="flex flex-col gap-1">
-                            {state.bodyType === "FeedbackModalBody" ? "" : state.header}
+                            {state.header}
                         </ModalHeader>
                         <ModalBody>
                             {renderBody()}

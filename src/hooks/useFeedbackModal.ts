@@ -29,11 +29,16 @@ export const useFeedbackModal = () => {
         dispatch(feedbackModalSlice.actions.setTransaction(transaction));
     }
 
+    const setFeedbackId = (feedbackId: string) => {
+        dispatch(feedbackModalSlice.actions.setFeedbackId(feedbackId));
+    }
+
     return {
         state,
         setContent,
         onOpenChange,
         setFeedbackRequest,
         setTransaction,
+        setFeedbackId,
     };
 }

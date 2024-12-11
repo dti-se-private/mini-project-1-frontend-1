@@ -4,11 +4,9 @@ import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@
 import {Button} from "@nextui-org/react";
 import moment from "moment";
 import {useParticipant} from "@/src/hooks/useParticipant";
-import {
-    RetrieveAllFeedbackResponse,
-    RetrieveFeedbackResponse
-} from "@/src/stores/apis/participantApi";
+import {RetrieveAllFeedbackResponse} from "@/src/stores/apis/participantApi";
 import {useFeedbackModal} from "@/src/hooks/useFeedbackModal";
+import {useEffect} from "react";
 
 export default function Page() {
     const participant = useParticipant();
@@ -16,17 +14,41 @@ export default function Page() {
 
     const handleCheckFeedback = (trx: RetrieveAllFeedbackResponse) => {
         modal.setContent({
-            header: 'Feedback',
-            body: 'Feedback',
+            header: '',
+            body: 'Create Feedback',
             bodyType: 'FeedbackModalBody',
         });
         modal.setTransaction(trx);
         modal.onOpenChange(true);
     }
 
-    const handleDeleteFeedback = (feedback: RetrieveFeedbackResponse) => {
-        alert(feedback);
+    const handleDeleteFeedback = (trx: RetrieveAllFeedbackResponse) => {
+        modal.setContent({
+            header: '',
+            body: 'Delete Feedback',
+            bodyType: 'DeleteFeedback',
+        });
+        modal.setTransaction(trx);
+        modal.onOpenChange(true);
     }
+
+    useEffect(() => {
+        if (modal.state.feedbackRequest !== undefined) {
+            participant.createFeedback(modal.state.feedbackRequest).then(r => {
+                if (r.data) {
+                    participant.feedbackApiResult.refetch();
+                }
+            });
+        }
+    }, [modal.state.feedbackRequest]);
+
+    useEffect(() => {
+        if (modal.state.feedbackId !== undefined) {
+            participant.deleteFeedback({id : modal.state.feedbackId}).then(() => {
+                participant.feedbackApiResult.refetch();
+            });
+        }
+    }, [modal.state.feedbackId]);
 
     return (
         <div className="container py-8 px-12 flex flex-col justify-center items-center min-h-[80vh]">
@@ -57,7 +79,7 @@ export default function Page() {
                                     {feedback.feedback?.id ? (
                                             <Button
                                                 color="danger"
-                                                onClick={() => handleDeleteFeedback(feedback.feedback)}
+                                                onClick={() => handleDeleteFeedback(feedback)}
                                             >
                                                 Delete
                                             </Button>)

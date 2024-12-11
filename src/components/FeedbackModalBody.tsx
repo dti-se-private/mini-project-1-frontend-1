@@ -22,18 +22,19 @@ export default function Component() {
     const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void }) => {
         setFeedbackRequest(values);
         actions.resetForm();
+        onOpenChange(false);
     };
 
     return (
         <div className="w-full flex flex-col justify-center p-2">
             <div className="flex flex-col gap-2 text-center mb-4">
                 <p className="text-lg font-semibold">{state.transaction?.eventName}</p>
-                <p className="text-sm text-gray-500">We value your feedback. If you have any ideas or suggestions to improve our event,let us know.</p>
+                <p className="text-sm text-gray-500">We value your feedback. If you have any ideas or suggestions to improve our event, let us know.</p>
             </div>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                 {({values, setFieldValue, errors, touched}) => (
                     <Form className="w-full">
-                        <div className="w-full max-w-lg p-6 space-y-4 mb-2 border-b-1 border-b-gray-300">
+                        <div className="w-full p-6 space-y-4 mb-2 border-b-1 border-b-gray-300">
                             <FormInput name="review" placeholder="type your ldeas or suggestions" type="text" />
                             <div className="form-group">
                                 <div className="flex justify-center space-x-2 mt-2">
