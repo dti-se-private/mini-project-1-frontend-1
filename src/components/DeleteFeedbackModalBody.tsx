@@ -5,13 +5,13 @@ import { Form, Formik } from "formik";
 import { Button } from "@nextui-org/react";
 import { useFeedbackModal } from "@/src/hooks/useFeedbackModal";
 
-export default function FeedbackModalBody() {
-    const { state, setFeedbackRequest, onOpenChange } = useFeedbackModal();
+export default function DeleteFeedbackModalBody() {
+    const { state, onOpenChange, setFeedbackId } = useFeedbackModal();
 
     const initialValues: CreateFeedbackRequest = {
         transactionId: state.transaction?.transactionId ?? "",
-        rating: 0,
-        review: "",
+        rating: state.transaction?.feedback?.rating ?? 0,
+        review: state.transaction?.feedback?.review ?? "",
     };
 
     const validationSchema = Yup.object().shape({
@@ -19,20 +19,18 @@ export default function FeedbackModalBody() {
         review: Yup.string().required("Review is required."),
     });
 
-    const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void }) => {
-        setFeedbackRequest(values);
-        actions.resetForm();
+    const handleSubmit = () => {
         onOpenChange(false);
     };
 
     return (
         <div className="w-full flex flex-col justify-center p-2">
             <div className="flex flex-col gap-2 text-center mb-4">
-                <p className="text-lg font-semibold">{state.transaction?.eventName}</p>
-                <p className="text-sm text-gray-500">We value your feedback. If you have any ideas or suggestions to improve our event, let us know.</p>
+                <p className="text-lg">{state.transaction?.eventName}</p>
+                <p className="text-base font-semibold">Are you sure you want to delete this feedback?</p>
             </div>
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                {({values, setFieldValue, errors, touched}) => (
+                {({values, errors, touched}) => (
                     <Form className="w-full">
                         <div className="w-full p-6 space-y-4 mb-2 border-b-1 border-b-gray-300">
                             <FormInput name="review" placeholder="type your ldeas or suggestions" type="text" />
@@ -46,7 +44,6 @@ export default function FeedbackModalBody() {
                                                 className={`text-3xl cursor-pointer ${
                                                     values.rating >= value ? "text-yellow-400" : "text-gray-300"
                                                 }`}
-                                                onClick={() => setFieldValue("rating", value)}
                                             >★</span>
                                         );
                                     })}
@@ -59,11 +56,18 @@ export default function FeedbackModalBody() {
                         </div>
                         <div className="w-ful flex gap-2 justify-end">
                             <Button onClick={() => onOpenChange(false)}
-                                    className="w-1/3 md:w-6 font-semibold rounded-md py-2 bg-white hover:bg-gray-100">
+                                    className="w-1/3 md:w-6 text-white font-semibold rounded-md py-2 bg-blue-500 hover:bg-blue-100">
                                 Cancel
                             </Button>
-                            <Button type="submit" className="w-1/3 md:w-6 bg-blue-500 text-white font-semibold rounded-md py-2 hover:bg-blue-600">
-                                Create
+                            <Button
+                                onClick={() => {
+                                    if (state.transaction?.feedback.id) {
+                                        setFeedbackId(state.transaction.feedback.id);
+                                        onOpenChange(false);
+                                    }
+                                }}
+                                className="w-1/3 md:w-6 bg-red-500 text-white font-semibold rounded-md py-2 hover:bg-red-600">
+                                Delete
                             </Button>
                         </div>
                     </Form>

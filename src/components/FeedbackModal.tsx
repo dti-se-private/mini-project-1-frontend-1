@@ -1,13 +1,13 @@
 "use client"
-import {Button, Modal, ModalBody, ModalContent, ModalHeader} from "@nextui-org/react";
+import {Modal, ModalBody, ModalContent, ModalHeader} from "@nextui-org/react";
 import {useFeedbackModal} from "@/src/hooks/useFeedbackModal";
 import FeedbackModalBody from "@/src/components/FeedbackModalBody";
+import DeleteFeedbackModalBody from "@/src/components/DeleteFeedbackModalBody";
 
 export default function Component() {
     const {
         state,
         onOpenChange,
-        setFeedbackId,
     } = useFeedbackModal();
 
     const renderBody = () => {
@@ -16,27 +16,7 @@ export default function Component() {
                 return (<FeedbackModalBody />);
             case "DeleteFeedback":
                 return (
-                    <>
-                        <div>Are you sure you want to delete this feedback?</div>
-                        <div className="flex gap-4 justify-end">
-                            <Button
-                                color="danger"
-                                onClick={() => {
-                                    if (state.transaction?.feedback.id) {
-                                        setFeedbackId(state.transaction.feedback.id);
-                                        onOpenChange(false);
-                                    }
-                                }}
-                            >
-                                Yes
-                            </Button>
-                            <Button
-                                onClick={() => onOpenChange(false)}
-                            >
-                                No
-                            </Button>
-                        </div>
-                    </>
+                    <DeleteFeedbackModalBody />
                 );
             default:
                 return state?.body || null;
