@@ -1,5 +1,45 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {axiosBaseQuery, ResponseBody} from "@/src/stores/apis";
+import {RetrieveEventTicketResponse, RetrieveEventVoucherResponse} from "@/src/stores/apis/eventApi";
+
+export interface TransactionEventDetailResponse {
+    id: string;
+    name: string;
+    description: string;
+    time: string;
+    location: string;
+    category: string;
+    eventTickets: RetrieveEventTicketResponse[];
+    eventVouchers: RetrieveEventVoucherResponse[];
+}
+
+export interface TransactionDetailResponse {
+    transactionId: string;
+    eventId: string;
+    time: string;
+    usedPoints: UsedPointResponse[];
+    usedVouchers: UsedVoucherResponse[];
+}
+
+export interface UsedPointResponse {
+    fixedAmount: number;
+    endedAt: string;
+}
+
+export interface UsedVoucherResponse {
+    name: string;
+    description: string;
+    code: string;
+    variableAmount: number;
+    endedAt: string;
+}
+
+export interface RetrieveAllTransactionResponse {
+    transactionId: string;
+    eventId: string;
+    eventName: string;
+    time: Date;
+}
 
 export interface RetrieveAllPointResponse {
     fixedAmount: number;
@@ -52,6 +92,19 @@ export const participantApi = createApi({
         baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/participant`
     }),
     endpoints: (builder) => ({
+        getTransactions: builder.query<ResponseBody<RetrieveAllTransactionResponse[]>, SearchRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`
+                ];
+                return baseQuery({
+                    url: `/transactions?${queryParams.join("&")}`,
+                    method: "GET"
+                });
+            }
+        }),
         getPoints: builder.query<ResponseBody<RetrieveAllPointResponse[]>, SearchRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
@@ -108,6 +161,27 @@ export const participantApi = createApi({
                     url: `/feedbacks/${args.id}`,
                     method: "DELETE",
                     data: args,
+                });
+            }
+        }),
+        getTransactionDetail: builder.query<ResponseBody<TransactionDetailResponse>, { id: string }>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: `/transactions/${args.id}`,
+                    method: "GET"
+                });
+            }
+        }),
+        getTransactionEventDetail: builder.query<ResponseBody<TransactionEventDetailResponse>, {
+            id: string,
+            eventId: string,
+        }>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: `/transactions/${args.id}/${args.eventId}`,
+                    method: "GET"
                 });
             }
         }),

@@ -7,6 +7,7 @@ import {useParticipant} from "@/src/hooks/useParticipant";
 import {RetrieveAllFeedbackResponse} from "@/src/stores/apis/participantApi";
 import {useFeedbackModal} from "@/src/hooks/useFeedbackModal";
 import {useEffect} from "react";
+import Link from "next/link";
 
 export default function Page() {
     const participant = useParticipant();
@@ -195,6 +196,61 @@ export default function Page() {
                     </Button>
                     <Button
                         onClick={() => participant.setFeedbackPage(participant.state.feedbackCurrentPage + 1)}
+                    >
+                        {'>'}
+                    </Button>
+                </div>
+
+                <br/>
+
+                <div className="flex items-center justify-between mb-6">
+                    <div className="text-2xl font-bold">Transaction</div>
+                </div>
+
+                <Table className="min-h-[50vh] w-full text-left"
+                       aria-label="Transaction Table">
+                    <TableHeader className="bg-gray-300">
+                        <TableColumn>#</TableColumn>
+                        <TableColumn>Trx ID</TableColumn>
+                        <TableColumn>Event ID</TableColumn>
+                        <TableColumn>Event Name</TableColumn>
+                        <TableColumn>Time</TableColumn>
+                        <TableColumn>Actions</TableColumn>
+                    </TableHeader>
+                    <TableBody emptyContent="Empty!">
+                        {(participant.transactionApiResult?.data?.data ?? []).map((trx, index) => (
+                            <TableRow key={'feedback' + index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{trx.transactionId}</TableCell>
+                                <TableCell>{trx.eventId}</TableCell>
+                                <TableCell>{trx.eventName}</TableCell>
+                                <TableCell>{moment(trx.time).format("YYYY-MM-DD HH:mm")}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        color="primary"
+                                        as={Link}
+                                        href={`/participant/${trx.transactionId}`}
+                                    >
+                                        Detail
+                                    </Button>)
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+
+                <div className="flex justify-center gap-4 mt-4">
+                    <Button
+                        onClick={() => participant.setTransactionPage(participant.state.transactionCurrentPage - 1)}
+                        disabled={participant.state.transactionCurrentPage === 0}
+                    >
+                        {'<'}
+                    </Button>
+                    <Button>
+                        {participant.state.transactionCurrentPage + 1}
+                    </Button>
+                    <Button
+                        onClick={() => participant.setTransactionPage(participant.state.transactionCurrentPage + 1)}
                     >
                         {'>'}
                     </Button>

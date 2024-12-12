@@ -7,6 +7,8 @@ export interface ParticipantState {
     pointCurrentPage: number;
     voucherPrevPage: number;
     voucherCurrentPage: number;
+    transactionPrevPage: number;
+    transactionCurrentPage: number;
     size: number;
 }
 
@@ -19,6 +21,8 @@ export const participantSlice = createSlice({
         pointCurrentPage: 0,
         voucherPrevPage: 0,
         voucherCurrentPage: 0,
+        transactionCurrentPage: 0,
+        transactionPrevPage: 0,
         size: 10,
     } as ParticipantState,
     reducers: {
@@ -36,6 +40,11 @@ export const participantSlice = createSlice({
             const {prevPage, currentPage} = action.payload;
             state.voucherPrevPage = prevPage ?? state.voucherCurrentPage;
             state.voucherCurrentPage = currentPage;
-        }
+        },
+        setTransactionPage: (state, action) => {
+            const {prevPage, currentPage} = action.payload;
+            state.transactionPrevPage = prevPage ?? state.transactionCurrentPage;
+            state.transactionCurrentPage = currentPage;
+        },
     }
 });

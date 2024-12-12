@@ -20,6 +20,10 @@ export const useParticipant = () => {
         page: state.voucherCurrentPage,
         size: state.size,
     })
+    const transactionApiResult = participantApi.useGetTransactionsQuery({
+        page: state.transactionCurrentPage,
+        size: state.size,
+    })
     const [createFeedbackApiTrigger, createFeedbackApiResult] = participantApi.useCreateFeedbackMutation();
     const [deleteFeedbackApiTrigger, deleteFeedbackApiResult] = participantApi.useDeleteFeedbackMutation();
 
@@ -52,6 +56,13 @@ export const useParticipant = () => {
             }));
         }
     }
+    const setTransactionPage = (page: number) => {
+        if (page >= 0) {
+            dispatch(participantSlice.actions.setTransactionPage({
+                currentPage: page
+            }));
+        }
+    }
 
     useEffect(() => {
         feedbackApiResult.refetch();
@@ -62,12 +73,16 @@ export const useParticipant = () => {
     useEffect(() => {
         voucherApiResult.refetch();
     }, [state.voucherCurrentPage]);
+    useEffect(() => {
+        transactionApiResult.refetch();
+    }, [state.transactionCurrentPage]);
 
     return {
         state,
         feedbackApiResult,
         pointApiResult,
         voucherApiResult,
+        transactionApiResult,
         createFeedback,
         createFeedbackApiResult,
         deleteFeedback,
@@ -75,5 +90,6 @@ export const useParticipant = () => {
         setFeedbackPage,
         setPointPage,
         setVoucherPage,
+        setTransactionPage,
     };
 }
