@@ -5,7 +5,6 @@ import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@nextui-org/react";
 import {useModal} from "@/src/hooks/useModal";
-import Json from "@/src/components/Json";
 import {Account, PatchOneAccountRequest} from "@/src/stores/apis/accountApi";
 
 export default function Page() {
@@ -33,7 +32,6 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        actions.setSubmitting(false);
         const request: PatchOneAccountRequest = {
             id: values.id,
             email: values.email,
@@ -49,16 +47,17 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Update Succeed",
-                    body: <Json value={data}/>,
+                    body: `${data.message}`,
                 })
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Update Failed",
-                    body: <Json value={error}/>,
+                    body: `${error.data.message}`,
                 })
             }).finally(() => {
                 modal.onOpenChange(true);
+                actions.setSubmitting(false);
             });
     };
 
@@ -73,7 +72,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     <Form className="w-2/3 md:w-1/3">
-                        <FormInput name="id" label="Id" type="text" isDisabled/>
+                        <FormInput name="id" label="ID" type="text" isDisabled/>
                         <FormInput name="email" label="Email" type="email"/>
                         <FormInput name="password" label="Password" type="password"/>
                         <FormInput name="name" label="Name" type="text"/>

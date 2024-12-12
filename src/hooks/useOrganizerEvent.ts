@@ -1,21 +1,49 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {CreateEventRequest, organizerEventApi, PatchEventRequest} from "@/src/stores/apis/organizerEventApi";
-import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
+import {CreateEventRequest, organizerApi, PatchEventRequest} from "@/src/stores/apis/organizerApi";
+import {organizerSlice} from "@/src/stores/slices/organizerSlice";
 import {useParams} from "next/navigation";
 import {useEffect} from "react";
 import moment from "moment";
 
 export const useOrganizerEvent = () => {
     const dispatch = useDispatch();
-    const {id: eventId}: { id: string } = useParams();
-    const [createEventApiTrigger] = organizerEventApi.useLazyCreateEventQuery();
-    const [patchEventApiTrigger] = organizerEventApi.useLazyPatchEventQuery();
-    const [deleteEventApiTrigger] = organizerEventApi.useLazyDeleteEventQuery();
-    const retrieveEventApiResult = organizerEventApi.useRetrieveEventQuery({id: eventId});
+    const {eventId}: { eventId: string } = useParams();
+    const [createEventApiTrigger] = organizerApi.useLazyCreateEventQuery();
+    const [patchEventApiTrigger] = organizerApi.useLazyPatchEventQuery();
+    const [deleteEventApiTrigger] = organizerApi.useLazyDeleteEventQuery();
+    const retrieveEventApiResult = organizerApi.useRetrieveEventQuery({id: eventId});
 
-    const eventManagementState = useSelector((state: RootState) => state
-        .eventManagementSlice);
+    const organizerState = useSelector((state: RootState) => state.organizerSlice);
+
+    const retrieveEventParticipantsApiResult = organizerApi.useRetrieveEventParticipantsQuery({
+        eventId: eventId,
+        page: organizerState.currentPage,
+        size: organizerState.size
+    });
+
+    const setPage = (page: number) => {
+        if (page >= 0) {
+            dispatch(organizerSlice.actions.setPage({
+                currentPage: page
+            }));
+        }
+    }
+
+    useEffect(() => {
+        const newEventParticipants = retrieveEventParticipantsApiResult.data?.data ?? [];
+        dispatch(organizerSlice.actions.setEventParticipants({eventParticipants: newEventParticipants}));
+    }, [retrieveEventParticipantsApiResult.data]);
+
+    useEffect(() => {
+        retrieveEventParticipantsApiResult.refetch();
+    }, [organizerState.prevPage, organizerState.currentPage]);
+
+    useEffect(() => {
+        setPage(0);
+        retrieveEventApiResult.refetch();
+        retrieveEventParticipantsApiResult.refetch();
+    }, []);
 
     const createEvent = async (request: CreateEventRequest) => {
         const createEventApiResult = await createEventApiTrigger(request).unwrap();
@@ -31,7 +59,7 @@ export const useOrganizerEvent = () => {
         const patchEventApiResult = await patchEventApiTrigger(request).unwrap();
         const values = patchEventApiResult.data;
         if (values) {
-            dispatch(eventManagementSlice.actions.setEvent({
+            dispatch(organizerSlice.actions.setEvent({
                 event: {
                     ...values,
                     time: moment(values.time).format('YYYY-MM-DDTHH:mm'),
@@ -43,7 +71,7 @@ export const useOrganizerEvent = () => {
                 }
             }));
         } else {
-            dispatch(eventManagementSlice.actions.setEvent({
+            dispatch(organizerSlice.actions.setEvent({
                 event: undefined,
             }));
         }
@@ -51,13 +79,9 @@ export const useOrganizerEvent = () => {
     }
 
     useEffect(() => {
-        retrieveEventApiResult.refetch();
-    }, []);
-
-    useEffect(() => {
         const values = retrieveEventApiResult.data?.data;
         if (values) {
-            dispatch(eventManagementSlice.actions.setEvent({
+            dispatch(organizerSlice.actions.setEvent({
                 event: {
                     ...values,
                     time: moment(values.time).format('YYYY-MM-DDTHH:mm'),
@@ -73,8 +97,9 @@ export const useOrganizerEvent = () => {
 
     return {
         eventId,
-        eventManagementState,
+        eventManagementState: organizerState,
         retrieveEventApiResult,
+        setPage,
         createEvent,
         deleteEvent,
         patchEvent

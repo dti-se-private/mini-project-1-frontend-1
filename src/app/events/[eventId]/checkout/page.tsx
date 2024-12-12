@@ -4,7 +4,6 @@ import moment from "moment";
 import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import * as Yup from "yup";
-import Json from "@/src/components/Json";
 import {
     TransactionCheckoutRequest,
     TransactionTicketCheckoutRequest,
@@ -51,7 +50,6 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        actions.setSubmitting(false);
         if (!authentication.state.isLoggedIn) {
             modal.setContent({
                 header: "Login Required",
@@ -97,16 +95,17 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Checkout Succeed",
-                    body: <Json value={data ?? {}}/>,
+                    body: `${data.message}`,
                 })
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Checkout Failed",
-                    body: <Json value={error}/>,
+                    body: `${error.data.message}`,
                 })
             }).finally(() => {
             modal.onOpenChange(true);
+            actions.setSubmitting(false);
         });
     };
 

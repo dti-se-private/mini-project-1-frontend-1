@@ -15,9 +15,12 @@ import {searchSlice} from "@/src/stores/slices/searchSlice";
 import {searcherSlice} from "@/src/stores/slices/searcherSlice";
 import {transactionApi} from "@/src/stores/apis/transactionApi";
 import {transactionSlice} from "@/src/stores/slices/transactionSlice";
-import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
+import {organizerSlice} from "@/src/stores/slices/organizerSlice";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
-import {organizerEventApi} from "@/src/stores/apis/organizerEventApi";
+import {organizerApi} from "@/src/stores/apis/organizerApi";
+import {participantSlice} from "@/src/stores/slices/participantSlice";
+import {participantApi} from "@/src/stores/apis/participantApi";
+import {feedbackModalSlice} from "@/src/stores/slices/feedbackModalSlice";
 
 const rootReducer = combineReducers({
     [authenticationSlice.reducerPath]: authenticationSlice.reducer,
@@ -25,14 +28,17 @@ const rootReducer = combineReducers({
     [searcherSlice.reducerPath]: searcherSlice.reducer,
     [searchSlice.reducerPath]: searchSlice.reducer,
     [modalSlice.reducerPath]: modalSlice.reducer,
+    [organizerSlice.reducerPath]: organizerSlice.reducer,
     [transactionSlice.reducerPath]: transactionSlice.reducer,
+    [participantSlice.reducerPath]: participantSlice.reducer,
+    [feedbackModalSlice.reducerPath]: feedbackModalSlice.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [eventApi.reducerPath]: eventApi.reducer,
     [statisticApi.reducerPath]: statisticApi.reducer,
     [transactionApi.reducerPath]: transactionApi.reducer,
-    [organizerEventApi.reducerPath]: organizerEventApi.reducer,
-    [eventManagementSlice.reducerPath]: eventManagementSlice.reducer,
+    [organizerApi.reducerPath]: organizerApi.reducer,
+    [participantApi.reducerPath]: participantApi.reducer,
 })
 
 const createNoopStorage = () => {
@@ -68,11 +74,12 @@ export const store = configureStore({
         },
     }).concat(
         eventApi.middleware,
-        organizerEventApi.middleware,
+        organizerApi.middleware,
         authenticationApi.middleware,
         accountApi.middleware,
         transactionApi.middleware,
         statisticApi.middleware,
+        participantApi.middleware,
     ),
 })
 

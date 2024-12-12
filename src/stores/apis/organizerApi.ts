@@ -30,7 +30,7 @@ export interface CreateEventRequest {
     eventVouchers: CreateEventVoucherRequest[];
 }
 
-export interface SearchOrganizerEventRequest {
+export interface RetrieveOrganizerRequest {
     page: number;
     size: number;
 }
@@ -71,13 +71,44 @@ export interface PatchEventRequest {
     eventVouchers: PatchEventVoucherRequest[];
 }
 
-export const organizerEventApi = createApi({
-    reducerPath: "organizerEventApi",
+export interface EventParticipantRequest {
+    eventId: string;
+    page: number;
+    size: number;
+}
+
+export interface RetrieveEventParticipantFieldResponse {
+    key: string
+    value: string
+}
+
+export interface RetrieveEventParticipantResponse {
+    accountId: string
+    transactionId: string
+    eventTicketId: string
+    fields: RetrieveEventParticipantFieldResponse[]
+}
+
+export const organizerApi = createApi({
+    reducerPath: "organizerApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/organizer/events`
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/organizers/events`
     }),
     endpoints: (builder) => ({
-        retrieveEvents: builder.query<ResponseBody<RetrieveEventResponse[]>, SearchOrganizerEventRequest>({
+        retrieveEventParticipants: builder.query<ResponseBody<RetrieveEventParticipantResponse[]>, EventParticipantRequest>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                const queryParams = [
+                    `page=${args.page}`,
+                    `size=${args.size}`
+                ];
+                return baseQuery({
+                    url: `/${args.eventId}/participants?${queryParams.join("&")}`,
+                    method: "GET"
+                });
+            }
+        }),
+        retrieveEvents: builder.query<ResponseBody<RetrieveEventResponse[]>, RetrieveOrganizerRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
