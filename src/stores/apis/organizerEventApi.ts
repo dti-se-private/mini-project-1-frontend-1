@@ -116,5 +116,14 @@ export const organizerEventApi = createApi({
                 });
             }
         }),
+        deleteEvent: builder.query<ResponseBody<null>, { id: string }>({
+            // @ts-expect-error: Still compatible even in type lint error.
+            queryFn: async (args, api, extraOptions, baseQuery) => {
+                return baseQuery({
+                    url: `/${args.id}`,
+                    method: "DELETE",
+                });
+            }
+        }),
     })
 });

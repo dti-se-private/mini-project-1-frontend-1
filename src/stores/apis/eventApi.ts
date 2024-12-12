@@ -10,7 +10,6 @@ export interface RetrieveOrganizerAccountResponse {
     profileImageUrl: string;
 }
 
-
 export interface RetrieveEventTicketFieldResponse {
     id: string;
     key: string;
@@ -35,6 +34,18 @@ export interface RetrieveEventVoucherResponse {
     endedAt: string;
 }
 
+export interface RetrieveEventParticipantFieldResponse {
+    key: string
+    value: string
+}
+
+export interface RetrieveEventParticipantResponse {
+    accountId: string
+    transactionId: string
+    eventTicketId: string
+    fields: RetrieveEventParticipantFieldResponse[]
+}
+
 export interface RetrieveEventResponse {
     id: string;
     name: string;
@@ -46,6 +57,7 @@ export interface RetrieveEventResponse {
     organizerAccount: RetrieveOrganizerAccountResponse;
     eventTickets: RetrieveEventTicketResponse[];
     eventVouchers: RetrieveEventVoucherResponse[];
+    eventParticipants: RetrieveEventParticipantResponse[];
     participantCount: number;
 }
 
@@ -55,7 +67,6 @@ export interface SearchEventRequest {
     search: string;
     filters: string[];
 }
-
 
 export const eventApi = createApi({
     reducerPath: "eventApi",

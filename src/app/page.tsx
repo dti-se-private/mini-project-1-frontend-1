@@ -73,7 +73,7 @@ export default function Page() {
                         >
                             <Image
                                 className="w-full h-3/5 object-cover rounded-md mb-4"
-                                src={event.bannerImageUrl}
+                                src={event.bannerImageUrl ?? "https://placehold.co/1366x768?text=event"}
                                 alt='event'
                             />
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
@@ -82,7 +82,11 @@ export default function Page() {
                                 <div className="overflow-hidden truncate w-full">{event.location}</div>
                                 <div className="w-full h-1/5 flex justify-between">
                                     <div className="overflow-hidden truncate w-full">
-                                        {currencyFormatter.format(event.eventTickets[0].price)}
+                                        {
+                                            event.eventTickets[0].price > 0 ?
+                                                currencyFormatter.format(event.eventTickets[0].price) :
+                                                "FREE"
+                                        }
                                     </div>
                                     <div className="overflow-hidden truncate w-full text-right">
                                         {event.eventTickets[0].slots} Slots left!

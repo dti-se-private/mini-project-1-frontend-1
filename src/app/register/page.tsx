@@ -30,7 +30,8 @@ export default function Page() {
         referralCode: Yup.string(),
     });
 
-    const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
         const request: RegisterByEmailAndPasswordRequest = {
             email: values.email,
             password: values.password,

@@ -18,6 +18,7 @@ import {
 import {useModal} from '@/src/hooks/useModal';
 import Json from "@/src/components/Json";
 import moment from "moment/moment";
+import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
 
 export default function Page() {
     const modal = useModal();
@@ -159,7 +160,7 @@ export default function Page() {
                     initialValues={initialValues}
                     enableReinitialize
                 >
-                    <Form className="w-2/3 md:w-2/4 flex flex-col gap-1">
+                    <Form className="w-2/3 md:w-2/4 flex flex-col gap-1 mb-12">
                         <p className="text-gray-700">Event</p>
                         <div className="flex flex-col gap-1 mb-3">
                             <FormInput
@@ -299,6 +300,37 @@ export default function Page() {
                         </Button>
                     </Form>
                 </Formik>
+
+                <div className="w-3/4 md:w-4/5 flex flex-col gap-1">
+                    <p className="text-gray-700">Participants</p>
+                    <Table className="min-h-[50vh] w-full text-left">
+                        <TableHeader className="bg-gray-300">
+                            <TableColumn>#</TableColumn>
+                            <TableColumn>Account ID</TableColumn>
+                            <TableColumn>Transaction ID</TableColumn>
+                            <TableColumn>Event Ticket ID</TableColumn>
+                            <TableColumn>Name</TableColumn>
+                            <TableColumn>Email</TableColumn>
+                            <TableColumn>Phone</TableColumn>
+                            <TableColumn>Dob</TableColumn>
+                        </TableHeader>
+                        <TableBody
+                            emptyContent={organizerEvent.retrieveEventApiResult.isLoading ? <Spinner/> : "Empty!"}>
+                            {(organizerEvent.eventManagementState.event?.eventParticipants ?? []).map((participants, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>{participants.accountId}</TableCell>
+                                    <TableCell>{participants.transactionId}</TableCell>
+                                    <TableCell>{participants.eventTicketId}</TableCell>
+                                    <TableCell>{participants.fields.find((field) => field.key === "name")?.value}</TableCell>
+                                    <TableCell>{participants.fields.find((field) => field.key === "email")?.value}</TableCell>
+                                    <TableCell>{participants.fields.find((field) => field.key === "phone")?.value}</TableCell>
+                                    <TableCell>{participants.fields.find((field) => field.key === "dob")?.value}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
         </div>
     );

@@ -24,7 +24,8 @@ export default function Page() {
         password: Yup.string().required("Password is required."),
     });
 
-    const handleSubmit = (values: typeof initialValues, actions: { resetForm: () => void; }) => {
+    const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+        actions.setSubmitting(false);
         const request: LoginByEmailAndPasswordRequest = {
             email: values.email,
             password: values.password,
