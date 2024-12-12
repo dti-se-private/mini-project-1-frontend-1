@@ -16,7 +16,6 @@ import {
     RetrieveEventVoucherResponse,
 } from "@/src/stores/apis/eventApi";
 import {useModal} from '@/src/hooks/useModal';
-import Json from "@/src/components/Json";
 import moment from "moment/moment";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
 
@@ -86,7 +85,6 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        actions.setSubmitting(false);
         modal.setContent({
             header: "Are you sure?",
             body: (<>
@@ -100,14 +98,14 @@ export default function Page() {
                 </div>
                 <div className="flex gap-2 justify-end">
                     <Button color="danger" onClick={() => modal.onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={() => handleConfirmSubmit(values)}>Confirm</Button>
+                    <Button onClick={() => handleConfirmSubmit(values, actions)}>Confirm</Button>
                 </div>
             </>),
         })
         modal.onOpenChange(true);
     };
 
-    const handleConfirmSubmit = (values: typeof initialValues) => {
+    const handleConfirmSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
         const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const request: PatchEventRequest = {
             ...values,
@@ -124,17 +122,18 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Update Event Succeed",
-                    body: <Json value={data}/>,
+                    body: `${data.message}`,
                 })
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Update Event Failed",
-                    body: <Json value={error}/>,
+                    body: `${error.message}`,
                 })
             })
             .finally(() => {
                 modal.onOpenChange(true)
+                actions.setSubmitting(false);
             });
     };
 

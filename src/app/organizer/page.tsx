@@ -4,7 +4,6 @@ import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@nextui-org/react";
 import {useOrganizerEvents} from "@/src/hooks/useOrganizerEvents";
 import Link from "next/link";
-import Json from "@/src/components/Json";
 import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
 import {useModal} from '@/src/hooks/useModal';
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from 'recharts';
@@ -24,13 +23,13 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Delete Event Succeed",
-                    body: <Json value={data}/>,
+                    body: `${data.message}`,
                 })
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Delete Event Failed",
-                    body: <Json value={error}/>,
+                    body: `${error.message}`,
                 })
             })
             .finally(() => {

@@ -6,7 +6,6 @@ import {Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
 import {Button} from "@nextui-org/react";
 import {useModal} from "@/src/hooks/useModal";
-import Json from "@/src/components/Json";
 import {useRouter} from "next/navigation";
 
 export default function Page() {
@@ -25,7 +24,6 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        actions.setSubmitting(false);
         const request: LoginByEmailAndPasswordRequest = {
             email: values.email,
             password: values.password,
@@ -35,18 +33,19 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Login Succeed",
-                    body: <Json value={data}/>,
+                    body: `${data.message}`
                 })
                 router.push("/");
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Login Failed",
-                    body: <Json value={error}/>,
+                    body: `${error.message}`
                 })
             })
             .finally(() => {
                 modal.onOpenChange(true);
+                actions.setSubmitting(false);
             });
     };
 

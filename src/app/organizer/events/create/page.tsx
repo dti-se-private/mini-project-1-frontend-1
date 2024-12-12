@@ -11,7 +11,6 @@ import {
 import {Icon} from "@iconify/react";
 import {useModal} from '@/src/hooks/useModal';
 import moment from "moment";
-import Json from "@/src/components/Json";
 import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
 
 export default function Page() {
@@ -64,8 +63,6 @@ export default function Page() {
     });
 
     const handleSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
-        actions.setSubmitting(false);
-
         const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const request: CreateEventRequest = {
             ...values,
@@ -82,17 +79,18 @@ export default function Page() {
             .then((data) => {
                 modal.setContent({
                     header: "Create Event Succeed",
-                    body: <Json value={data}/>,
+                    body: `${data.message}`,
                 })
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Create Event Failed",
-                    body: <Json value={error}/>,
+                    body: `${error.message}`,
                 })
             })
             .finally(() => {
                 modal.onOpenChange(true)
+                actions.setSubmitting(false);
             });
     };
 

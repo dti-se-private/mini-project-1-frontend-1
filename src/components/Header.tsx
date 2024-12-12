@@ -16,7 +16,6 @@ import {useSearch} from "@/src/hooks/useSearch";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {SearchIcon} from "@nextui-org/shared-icons";
-import Json from "@/src/components/Json";
 import {useModal} from "@/src/hooks/useModal";
 import _ from "lodash";
 
@@ -32,14 +31,14 @@ export default function Component() {
             .then((data) => {
                 modal.setContent({
                     header: "Logout Succeed",
-                    body: <Json value={data ?? {}}/>,
+                    body: `${data?.message}`,
                 })
                 router.push("/");
             })
             .catch((error) => {
                 modal.setContent({
                     header: "Logout Failed",
-                    body: <Json value={error}/>,
+                    body:`${error.message}`,
                 })
             })
             .finally(() => {
