@@ -1,13 +1,13 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {ReactNode} from "react";
-import {CreateFeedbackRequest, RetrieveAllFeedbackResponse} from "@/src/stores/apis/participantApi";
+import {CreateFeedbackRequest, RetrieveFeedbackResponse} from "@/src/stores/apis/participantApi";
 
 export interface ModalState {
     isOpen: boolean;
     header?: ReactNode;
     body?: ReactNode;
     bodyType?: string;
-    transaction?: RetrieveAllFeedbackResponse;
+    transaction?: RetrieveFeedbackResponse;
     feedbackRequest?: CreateFeedbackRequest;
     feedbackId?: string;
 }
@@ -25,7 +25,7 @@ export const feedbackModalSlice = createSlice({
     } as ModalState,
     reducers: {
         setContent: (state, action) => {
-            const { header, body, bodyType } = action.payload;
+            const {header, body, bodyType} = action.payload;
             state.header = header;
             state.body = body;
             state.bodyType = bodyType;

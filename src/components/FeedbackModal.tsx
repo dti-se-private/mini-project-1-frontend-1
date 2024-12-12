@@ -13,10 +13,10 @@ export default function Component() {
     const renderBody = () => {
         switch (state.bodyType) {
             case "FeedbackModalBody":
-                return (<FeedbackModalBody />);
+                return (<FeedbackModalBody/>);
             case "DeleteFeedback":
                 return (
-                    <DeleteFeedbackModalBody />
+                    <DeleteFeedbackModalBody/>
                 );
             default:
                 return state?.body || null;

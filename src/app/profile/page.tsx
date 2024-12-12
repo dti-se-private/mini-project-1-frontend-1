@@ -72,7 +72,7 @@ export default function Page() {
                     enableReinitialize
                 >
                     <Form className="w-2/3 md:w-1/3">
-                        <FormInput name="id" label="Id" type="text" isDisabled/>
+                        <FormInput name="id" label="ID" type="text" isDisabled/>
                         <FormInput name="email" label="Email" type="email"/>
                         <FormInput name="password" label="Password" type="password"/>
                         <FormInput name="name" label="Name" type="text"/>

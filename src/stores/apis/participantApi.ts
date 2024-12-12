@@ -34,36 +34,38 @@ export interface UsedVoucherResponse {
     endedAt: string;
 }
 
-export interface RetrieveAllTransactionResponse {
+export interface RetrieveTransactionResponse {
     transactionId: string;
     eventId: string;
     eventName: string;
-    time: Date;
+    time: string;
 }
 
-export interface RetrieveAllPointResponse {
+export interface RetrievePointResponse {
     fixedAmount: number;
-    endedAt: Date;
+    endedAt: string;
 }
 
-export interface RetrieveAllVoucherResponse {
+export interface RetrieveVoucherResponse {
     name: string;
     description: string;
     code: string;
     variableAmount: number;
-    endedAt: Date;
-}
-
-export interface RetrieveAllFeedbackResponse {
-    transactionId: string;
-    eventId: string;
-    eventName: string;
-    time: Date;
-    feedback: RetrieveFeedbackResponse;
+    endedAt: string;
 }
 
 export interface RetrieveFeedbackResponse {
+    transactionId: string;
+    eventId: string;
+    eventName: string;
+    time: string;
+    feedback: Feedback;
+}
+
+export interface Feedback {
     id: string;
+    transactionId: string
+    accountId: string
     rating: number;
     review: string;
 }
@@ -81,7 +83,7 @@ export interface CreateFeedbackResponse {
     review: string;
 }
 
-export interface SearchRequest {
+export interface RetrieveParticipantRequest {
     page: number;
     size: number;
 }
@@ -89,10 +91,10 @@ export interface SearchRequest {
 export const participantApi = createApi({
     reducerPath: "participantApi",
     baseQuery: axiosBaseQuery({
-        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/participant`
+        baseUrl: `${process.env.NEXT_PUBLIC_BACKEND_1_URL}/participants`
     }),
     endpoints: (builder) => ({
-        getTransactions: builder.query<ResponseBody<RetrieveAllTransactionResponse[]>, SearchRequest>({
+        getTransactions: builder.query<ResponseBody<RetrieveTransactionResponse[]>, RetrieveParticipantRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
@@ -105,7 +107,7 @@ export const participantApi = createApi({
                 });
             }
         }),
-        getPoints: builder.query<ResponseBody<RetrieveAllPointResponse[]>, SearchRequest>({
+        getPoints: builder.query<ResponseBody<RetrievePointResponse[]>, RetrieveParticipantRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
@@ -118,7 +120,7 @@ export const participantApi = createApi({
                 });
             }
         }),
-        getVouchers: builder.query<ResponseBody<RetrieveAllVoucherResponse[]>, SearchRequest>({
+        getVouchers: builder.query<ResponseBody<RetrieveVoucherResponse[]>, RetrieveParticipantRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
@@ -131,7 +133,7 @@ export const participantApi = createApi({
                 });
             }
         }),
-        getFeedbacks: builder.query<ResponseBody<RetrieveAllFeedbackResponse[]>, SearchRequest>({
+        getFeedbacks: builder.query<ResponseBody<RetrieveFeedbackResponse[]>, RetrieveParticipantRequest>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 const queryParams = [
@@ -174,13 +176,13 @@ export const participantApi = createApi({
             }
         }),
         getTransactionEventDetail: builder.query<ResponseBody<TransactionEventDetailResponse>, {
-            id: string,
+            transactionId: string,
             eventId: string,
         }>({
             // @ts-expect-error: Still compatible even in type lint error.
             queryFn: async (args, api, extraOptions, baseQuery) => {
                 return baseQuery({
-                    url: `/transactions/${args.id}/${args.eventId}`,
+                    url: `/transactions/${args.transactionId}/events/${args.eventId}`,
                     method: "GET"
                 });
             }

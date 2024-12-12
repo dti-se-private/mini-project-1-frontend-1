@@ -3,11 +3,7 @@ import * as Yup from "yup";
 import {Button} from '@nextui-org/react';
 import {FieldArray, Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import {
-    CreateEventRequest,
-    CreateEventTicketRequest,
-    CreateEventVoucherRequest
-} from "@/src/stores/apis/organizerEventApi";
+import {CreateEventRequest, CreateEventTicketRequest, CreateEventVoucherRequest} from "@/src/stores/apis/organizerApi";
 import {Icon} from "@iconify/react";
 import {useModal} from '@/src/hooks/useModal';
 import moment from "moment";
@@ -108,7 +104,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
-                <div className="text-3xl font-bold mb-6">Event Creation</div>
+                <div className="text-3xl font-bold mb-6">My Event Creation</div>
                 <Formik
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}

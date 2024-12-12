@@ -38,10 +38,11 @@ export default function Component() {
             .catch((error) => {
                 modal.setContent({
                     header: "Logout Failed",
-                    body:`${error.message}`,
+                    body: `${error.message}`,
                 })
             })
             .finally(() => {
+                window.location.href = '/login';
                 modal.onOpenChange(true);
             });
     }

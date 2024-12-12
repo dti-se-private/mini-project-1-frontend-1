@@ -1,11 +1,7 @@
 'use client';
 import {Button, Input, Spinner} from "@nextui-org/react";
 import {useParams} from "next/navigation";
-import {
-    participantApi,
-    UsedPointResponse,
-    UsedVoucherResponse
-} from "@/src/stores/apis/participantApi";
+import {participantApi, UsedPointResponse, UsedVoucherResponse} from "@/src/stores/apis/participantApi";
 import moment from "moment";
 import Link from "next/link";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
@@ -14,7 +10,7 @@ import {useState} from "react";
 const ITEMS_PER_PAGE = 5;
 
 export default function Page() {
-    const {id: transactionId}: { id: string } = useParams();
+    const {transactionId}: { transactionId: string } = useParams();
     const transaction = participantApi
         .useGetTransactionDetailQuery({id: transactionId,});
 
@@ -37,7 +33,7 @@ export default function Page() {
         );
     }
 
-    const paginateData = <T,>(data: T[], page: number): T[] =>
+    const paginateData = <T, >(data: T[], page: number): T[] =>
         data.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE);
 
     const usedPoints = transaction.data?.data?.usedPoints || [];
@@ -60,7 +56,7 @@ export default function Page() {
                             type="text"
                             disabled
                         />
-                        <div className="w-full flex gap-1">
+                        <div className="w-full flex gap-3">
                             <div className="flex-1">
                                 <Input
                                     className="mb-6 w-full"
@@ -74,7 +70,7 @@ export default function Page() {
                                 <Button
                                     color="primary"
                                     as={Link}
-                                    href={`/participant/${transaction.data?.data?.transactionId}/${transaction.data?.data?.eventId}`}
+                                    href={`/participant/transactions/${transaction.data?.data?.transactionId}/events/${transaction.data?.data?.eventId}`}
                                 >
                                     Detail
                                 </Button>

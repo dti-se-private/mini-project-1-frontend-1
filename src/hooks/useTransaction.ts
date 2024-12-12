@@ -9,7 +9,7 @@ import {transactionSlice} from "@/src/stores/slices/transactionSlice";
 export const useTransaction = () => {
     const dispatch = useDispatch();
 
-    const {id: eventId}: { id: string } = useParams();
+    const {eventId}: { eventId: string } = useParams();
     const eventApiResult = eventApi.useRetrieveEventQuery({id: eventId});
     const [checkoutApiTrigger, checkoutApiResult] = transactionApi.useCheckoutMutation();
     const [tryCheckoutApiTrigger, tryCheckoutApiResult] = transactionApi.useTryCheckoutMutation();

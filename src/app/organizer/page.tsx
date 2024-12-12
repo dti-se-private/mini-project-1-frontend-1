@@ -12,9 +12,8 @@ import {SharedSelection} from "@nextui-org/system";
 import {ChevronDownIcon} from "@nextui-org/shared-icons";
 import {statisticApi} from "@/src/stores/apis/statisticApi";
 
-
 export default function Page() {
-    const {organizerEventApiResult, eventManagementState, setPage} = useOrganizerEvents();
+    const {organizerEventApiResult, organizerState, setPage} = useOrganizerEvents();
     const {deleteEvent} = useOrganizerEvent();
     const modal = useModal();
 
@@ -199,12 +198,14 @@ export default function Page() {
                                     <TableCell>{event.participantCount}</TableCell>
                                     <TableCell className="flex gap-4">
                                         <Button
+                                            color="primary"
                                             as={Link}
                                             href={`/organizer/events/${event.id}`}
                                         >
                                             Details
                                         </Button>
                                         <Button
+                                            color="danger"
                                             onClick={() => handleDeleteEvent(event.id)}
                                         >
                                             Delete
@@ -217,16 +218,16 @@ export default function Page() {
 
                     <div className="flex justify-center gap-4 mt-4">
                         <Button
-                            onClick={() => setPage(eventManagementState.currentPage - 1)}
-                            disabled={eventManagementState.currentPage === 0}
+                            onClick={() => setPage(organizerState.currentPage - 1)}
+                            disabled={organizerState.currentPage === 0}
                         >
                             {'<'}
                         </Button>
                         <Button>
-                            {eventManagementState.currentPage + 1}
+                            {organizerState.currentPage + 1}
                         </Button>
                         <Button
-                            onClick={() => setPage(eventManagementState.currentPage + 1)}
+                            onClick={() => setPage(organizerState.currentPage + 1)}
                         >
                             {'>'}
                         </Button>

@@ -3,11 +3,7 @@ import * as Yup from "yup";
 import {Button, Spinner} from '@nextui-org/react';
 import {FieldArray, Form, Formik} from "formik";
 import FormInput from "@/src/components/FormInput";
-import {
-    PatchEventRequest,
-    PatchEventTicketRequest,
-    PatchEventVoucherRequest
-} from "@/src/stores/apis/organizerEventApi";
+import {PatchEventRequest, PatchEventTicketRequest, PatchEventVoucherRequest} from "@/src/stores/apis/organizerApi";
 import {useOrganizerEvent} from "@/src/hooks/useOrganizerEvent";
 import {Icon} from "@iconify/react";
 import {
@@ -18,6 +14,7 @@ import {
 import {useModal} from '@/src/hooks/useModal';
 import moment from "moment/moment";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
+import Json from "@/src/components/Json";
 
 export default function Page() {
     const modal = useModal();
@@ -97,7 +94,15 @@ export default function Page() {
                     </p>
                 </div>
                 <div className="flex gap-2 justify-end">
-                    <Button color="danger" onClick={() => modal.onOpenChange(false)}>Cancel</Button>
+                    <Button
+                        color="danger"
+                        onClick={() => {
+                            modal.onOpenChange(false);
+                            actions.setSubmitting(false);
+                        }}
+                    >
+                        Cancel
+                    </Button>
                     <Button onClick={() => handleConfirmSubmit(values, actions)}>Confirm</Button>
                 </div>
             </>),
@@ -105,7 +110,9 @@ export default function Page() {
         modal.onOpenChange(true);
     };
 
-    const handleConfirmSubmit = (values: typeof initialValues, actions: { setSubmitting: (arg0: boolean) => void; }) => {
+    const handleConfirmSubmit = (values: typeof initialValues, actions: {
+        setSubmitting: (arg0: boolean) => void;
+    }) => {
         const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const request: PatchEventRequest = {
             ...values,
@@ -152,7 +159,7 @@ export default function Page() {
     return (
         <div className="py-8 flex flex-col justify-center items-center min-h-[80vh]">
             <div className="container flex flex-col justify-center items-center">
-                <div className="text-3xl font-bold mb-6">Event Details</div>
+                <div className="text-3xl font-bold mb-6">My Event Details</div>
                 <Formik
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
@@ -164,7 +171,7 @@ export default function Page() {
                         <div className="flex flex-col gap-1 mb-3">
                             <FormInput
                                 name="id"
-                                label="Event Id"
+                                label="Event ID"
                                 type="text"
                                 isDisabled
                             />
@@ -302,33 +309,53 @@ export default function Page() {
 
                 <div className="w-3/4 md:w-4/5 flex flex-col gap-1">
                     <p className="text-gray-700">Participants</p>
-                    <Table className="min-h-[50vh] w-full text-left">
+                    <Table className="min-h-[50vh] w-full text-left mb-6">
                         <TableHeader className="bg-gray-300">
                             <TableColumn>#</TableColumn>
                             <TableColumn>Account ID</TableColumn>
                             <TableColumn>Transaction ID</TableColumn>
                             <TableColumn>Event Ticket ID</TableColumn>
-                            <TableColumn>Name</TableColumn>
-                            <TableColumn>Email</TableColumn>
-                            <TableColumn>Phone</TableColumn>
-                            <TableColumn>Dob</TableColumn>
+                            <TableColumn>Fields</TableColumn>
                         </TableHeader>
                         <TableBody
                             emptyContent={organizerEvent.retrieveEventApiResult.isLoading ? <Spinner/> : "Empty!"}>
-                            {(organizerEvent.eventManagementState.event?.eventParticipants ?? []).map((participants, index) => (
+                            {(organizerEvent.eventManagementState.eventParticipants ?? []).map((participants, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>{participants.accountId}</TableCell>
                                     <TableCell>{participants.transactionId}</TableCell>
                                     <TableCell>{participants.eventTicketId}</TableCell>
-                                    <TableCell>{participants.fields.find((field) => field.key === "name")?.value}</TableCell>
-                                    <TableCell>{participants.fields.find((field) => field.key === "email")?.value}</TableCell>
-                                    <TableCell>{participants.fields.find((field) => field.key === "phone")?.value}</TableCell>
-                                    <TableCell>{participants.fields.find((field) => field.key === "dob")?.value}</TableCell>
+                                    <TableCell>
+                                        <Json
+                                            value={
+                                                participants.fields.reduce((accumulated, field) => {
+                                                    accumulated[field.key] = field.value;
+                                                    return accumulated;
+                                                }, {} as Record<string, string>)
+                                            }
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
+                    <div className="flex justify-center gap-4">
+                        <Button
+                            onClick={() => organizerEvent.setPage(organizerEvent.eventManagementState.currentPage - 1)}
+                        >
+                            {'<'}
+                        </Button>
+                        <Button
+                            disabled={true}
+                        >
+                            {organizerEvent.eventManagementState.currentPage + 1}
+                        </Button>
+                        <Button
+                            onClick={() => organizerEvent.setPage(organizerEvent.eventManagementState.currentPage + 1)}
+                        >
+                            {'>'}
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
 import {feedbackModalSlice} from "@/src/stores/slices/feedbackModalSlice";
-import {CreateFeedbackRequest, RetrieveAllFeedbackResponse} from "@/src/stores/apis/participantApi";
+import {CreateFeedbackRequest, RetrieveFeedbackResponse} from "@/src/stores/apis/participantApi";
 
 export const useFeedbackModal = () => {
     const dispatch = useDispatch();
@@ -25,7 +25,7 @@ export const useFeedbackModal = () => {
         dispatch(feedbackModalSlice.actions.setFeedbackRequest(feedbackRequest));
     }
 
-    const setTransaction = (transaction: RetrieveAllFeedbackResponse) => {
+    const setTransaction = (transaction: RetrieveFeedbackResponse) => {
         dispatch(feedbackModalSlice.actions.setTransaction(transaction));
     }
 

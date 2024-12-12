@@ -34,18 +34,6 @@ export interface RetrieveEventVoucherResponse {
     endedAt: string;
 }
 
-export interface RetrieveEventParticipantFieldResponse {
-    key: string
-    value: string
-}
-
-export interface RetrieveEventParticipantResponse {
-    accountId: string
-    transactionId: string
-    eventTicketId: string
-    fields: RetrieveEventParticipantFieldResponse[]
-}
-
 export interface RetrieveEventResponse {
     id: string;
     name: string;
@@ -57,7 +45,6 @@ export interface RetrieveEventResponse {
     organizerAccount: RetrieveOrganizerAccountResponse;
     eventTickets: RetrieveEventTicketResponse[];
     eventVouchers: RetrieveEventVoucherResponse[];
-    eventParticipants: RetrieveEventParticipantResponse[];
     participantCount: number;
 }
 

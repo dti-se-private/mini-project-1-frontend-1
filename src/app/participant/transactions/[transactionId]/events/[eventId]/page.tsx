@@ -8,14 +8,14 @@ import {useState} from "react";
 
 export default function Page() {
     const {
-        id: transactionId,
-        eventId: eventId,
+        transactionId,
+        eventId,
     }: {
-        id: string,
+        transactionId: string,
         eventId: string,
     } = useParams();
     const event = participantApi
-        .useGetTransactionEventDetailQuery({id: transactionId, eventId: eventId});
+        .useGetTransactionEventDetailQuery({transactionId, eventId});
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -141,7 +141,7 @@ export default function Page() {
                             </TableHeader>
                             <TableBody emptyContent="Empty!">
                                 {displayedVouchers.map((voucher, index) => (
-                                    <TableRow key={'voucher-' + index}>
+                                    <TableRow key={index}>
                                         <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                                         <TableCell>{voucher.name}</TableCell>
                                         <TableCell>{voucher.description}</TableCell>

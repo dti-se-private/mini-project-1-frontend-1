@@ -1,35 +1,39 @@
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/src/stores";
-import {organizerEventApi} from "@/src/stores/apis/organizerEventApi";
+import {organizerApi} from "@/src/stores/apis/organizerApi";
 import {useEffect} from "react";
-import {eventManagementSlice} from "@/src/stores/slices/eventManagementSlice";
+import {organizerSlice} from "@/src/stores/slices/organizerSlice";
 
 export const useOrganizerEvents = () => {
     const dispatch = useDispatch();
 
-    const eventManagementState = useSelector((state: RootState) => state
-        .eventManagementSlice);
+    const organizerState = useSelector((state: RootState) => state.organizerSlice);
 
-    const organizerEventApiResult = organizerEventApi.useRetrieveEventsQuery({
-        page: eventManagementState.currentPage,
-        size: eventManagementState.size
+    const organizerEventApiResult = organizerApi.useRetrieveEventsQuery({
+        page: organizerState.currentPage,
+        size: organizerState.size
     });
 
     const setPage = (page: number) => {
         if (page >= 0) {
-            dispatch(eventManagementSlice.actions.setPage({
+            dispatch(organizerSlice.actions.setPage({
                 currentPage: page
             }));
         }
     }
 
     useEffect(() => {
+        setPage(0);
         organizerEventApiResult.refetch();
-    }, [eventManagementState.currentPage]);
+    }, []);
+
+    useEffect(() => {
+        organizerEventApiResult.refetch();
+    }, [organizerState.currentPage]);
 
     return {
         organizerEventApiResult,
-        eventManagementState,
+        organizerState,
         setPage
     };
 }

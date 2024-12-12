@@ -7,8 +7,8 @@ import moment from "moment";
 import Image from "next/image";
 
 export default function Page() {
-    const {id}: { id: string } = useParams();
-    const {data, isLoading} = eventApi.useRetrieveEventQuery({id})
+    const {eventId}: { eventId: string } = useParams();
+    const {data, isLoading} = eventApi.useRetrieveEventQuery({id: eventId})
     const router = useRouter();
 
     const currencyFormatter = new Intl.NumberFormat('id-ID', {
@@ -105,7 +105,7 @@ export default function Page() {
                     <div className="flex justify-center w-full px-4">
                         <Button
                             className="w-full px-8 py-5 text-white bg-blue-600 hover:bg-blue-700"
-                            onClick={() => router.push(`/events/${id}/checkout`)}
+                            onClick={() => router.push(`/events/${eventId}/checkout`)}
                         >
                             Participate
                         </Button>
