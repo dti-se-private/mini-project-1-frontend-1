@@ -232,7 +232,7 @@ export default function Page() {
                                         href={`/participant/${trx.transactionId}`}
                                     >
                                         Detail
-                                    </Button>)
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}

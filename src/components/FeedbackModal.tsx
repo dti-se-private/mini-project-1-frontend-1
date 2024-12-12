@@ -39,7 +39,7 @@ export default function Component() {
                     </>
                 );
             default:
-                return state.body || null;
+                return state?.body || null;
         }
     };
 
