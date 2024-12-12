@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@iconify/react": "^5.0.2",
-    "@nextui-org/react": "^2.4.8",
+    "@nextui-org/react": "^2.6.8",
     "@reduxjs/toolkit": "^2.3.0",
     "@uiw/react-json-view": "^2.0.0-alpha.30",
     "axios": "^1.7.8",

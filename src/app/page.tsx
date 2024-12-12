@@ -1,5 +1,6 @@
 "use client"
-import {Button, Image, Spinner} from '@nextui-org/react';
+import {Button, Spinner} from '@nextui-org/react';
+import Image from 'next/image';
 import {useLanding} from '@/src/hooks/useLanding';
 import Link from 'next/link'
 import {upperFirst} from "tiny-case";
@@ -35,12 +36,14 @@ export default function Page() {
                     {
                         [1, 2, 3, 4].map((item, index) => (
                             <SwiperSlide key={index}>
-                                <Image
-                                    className="w-full h-[75vh]"
-                                    radius="md"
-                                    src={`https://placehold.co/1366x768?text=hero${index}`}
-                                    alt="hero"
-                                />
+                                <div className="w-full">
+                                    <Image
+                                        className="w-full h-[75vh] object-cover"
+                                        src={`https://placehold.co/1366x768?text=hero${index}`}
+                                        height={768} width={1366}
+                                        alt="hero"
+                                    />
+                                </div>
                             </SwiperSlide>
                         ))
                     }
@@ -71,11 +74,14 @@ export default function Page() {
                             key={index}
                             className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-3/4 md:w-1/4 h-full"
                         >
-                            <Image
-                                className="w-full h-3/5 object-cover rounded-md mb-4"
-                                src={event.bannerImageUrl ?? "https://placehold.co/1366x768?text=event"}
-                                alt='event'
-                            />
+                            <div className="w-full">
+                                <Image
+                                    className="w-full h-3/5 object-cover rounded-md mb-4"
+                                    width={1366} height={768}
+                                    src={event.bannerImageUrl ?? "https://placehold.co/1366x768?text=event"}
+                                    alt='event'
+                                />
+                            </div>
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
                                 <h3 className="overflow-hidden truncate w-full text-lg font-bold">{event.name}</h3>
                                 <h5 className="overflow-hidden truncate w-full">{moment(event.time).format('LT [on] DD/MM/YYYY [UTC]Z')}</h5>
