@@ -49,7 +49,7 @@ export default function Page() {
             .catch((error) => {
                 modal.setContent({
                     header: "Register Failed",
-                    body: `${error.message}`,
+                    body: `${error.data.message}`,
                 })
             }).finally(() => {
                 modal.onOpenChange(true);

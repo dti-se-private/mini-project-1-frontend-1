@@ -40,7 +40,7 @@ export default function Page() {
             .catch((error) => {
                 modal.setContent({
                     header: "Login Failed",
-                    body: `${error.message}`
+                    body: `${error.data.message}`
                 })
             })
             .finally(() => {

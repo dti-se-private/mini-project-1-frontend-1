@@ -29,7 +29,7 @@ export default function Page() {
             .catch((error) => {
                 modal.setContent({
                     header: "Delete Event Failed",
-                    body: `${error.message}`,
+                    body: `${error.data.message}`,
                 })
             })
             .finally(() => {
