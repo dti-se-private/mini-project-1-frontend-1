@@ -160,7 +160,7 @@ export default function Page() {
                                 {'<'}
                             </Button>
                             <Button>
-                                {currentPage + 1}
+                                {currentPage}
                             </Button>
                             <Button
                                 isDisabled={currentPage === totalPages}

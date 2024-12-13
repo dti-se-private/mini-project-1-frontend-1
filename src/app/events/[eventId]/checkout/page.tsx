@@ -86,7 +86,7 @@ export default function Page() {
         const request: TransactionCheckoutRequest = {
             eventId: transaction.eventId,
             transactionTickets: [transactionTicket],
-            voucherCodes: values.voucherCodes.split(","),
+            voucherCodes: values.voucherCodes ? values.voucherCodes.split(",") : [],
             points: values.points,
         }
 
@@ -137,7 +137,7 @@ export default function Page() {
         const request: TransactionCheckoutRequest = {
             eventId: transaction.eventId,
             transactionTickets: [transactionTicket],
-            voucherCodes: values.voucherCodes.split(","),
+            voucherCodes: values.voucherCodes ? values.voucherCodes.split(",") : [],
             points: values.points,
         }
         transaction
@@ -147,7 +147,12 @@ export default function Page() {
             })
             .catch((error) => {
                 console.log(error);
-            });
+                modal.setContent({
+                    header: "Checkout Validation Failed",
+                    body: `${error.data.message}`,
+                })
+                modal.onOpenChange(true);
+            })
     }
 
     const handleFormikChange = _.debounce((values: typeof initialValues) => {
@@ -192,7 +197,7 @@ export default function Page() {
                         <FormInput name="dob" label="Date of Birth" type="date"/>
                         <FormInput name="points" label="Points" type="number"/>
                         <FormInput name="voucherCodes" label="Voucher Codes" type="text"/>
-                        <Button type="submit" className="mt-4 w-full">
+                        <Button color="primary" type="submit" className="mt-4 w-full">
                             Checkout
                         </Button>
                     </Form>

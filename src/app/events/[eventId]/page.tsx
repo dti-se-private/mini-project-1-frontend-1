@@ -49,7 +49,7 @@ export default function Page() {
 
             {/* Details */}
             <section className="container flex flex-col px-12 gap-4 bg-white">
-                <h1 className="text-7xl md:text-8xl font-bold ">
+                <h1 className="text-5xl md:text-8xl font-bold ">
                     {data?.data?.name}
                 </h1>
                 <p className="text-lg md:text-xl mb-2">
@@ -87,15 +87,15 @@ export default function Page() {
                 <div className="flex flex-col w-full bg-gray-100 py-4 gap-4 rounded-lg mb-6 items-center">
                     {/* Pricing and Slots */}
                     <div
-                        className="flex justify-center items-center gap-1 md:gap-4 text-sm md:text-base font-semibold text-center">
+                        className="flex md:flex-row flex-col justify-center items-center gap-1 md:gap-4 text-sm md:text-base font-semibold text-center">
                         <p className="px-4">
                             Price {data?.data?.eventTickets[0]?.price ? currencyFormatter.format(data?.data?.eventTickets[0]?.price) : "FREE"}
                         </p>
-                        <p>•</p>
+                        <p className="hidden md:flex">•</p>
                         <p className="px-4">
                             {data?.data?.participantCount} people are participating
                         </p>
-                        <p>•</p>
+                        <p className="hidden md:flex">•</p>
                         <p className="px-4">
                             {data?.data?.eventTickets[0].slots} slots left!
                         </p>
@@ -104,7 +104,8 @@ export default function Page() {
                     {/* Call to Action */}
                     <div className="flex justify-center w-full px-4">
                         <Button
-                            className="w-full px-8 py-5 text-white bg-blue-600 hover:bg-blue-700"
+                            color="primary"
+                            className="w-full px-8 py-5"
                             onClick={() => router.push(`/events/${eventId}/checkout`)}
                         >
                             Participate

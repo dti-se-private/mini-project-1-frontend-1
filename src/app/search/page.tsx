@@ -1,9 +1,10 @@
 "use client"
-import {Button, Checkbox, CheckboxGroup, Image, Spinner} from '@nextui-org/react';
+import {Button, Checkbox, CheckboxGroup, Spinner} from '@nextui-org/react';
 import {useSearch} from "@/src/hooks/useSearch";
 import moment from "moment";
 import {upperFirst} from "tiny-case";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Page() {
     const search = useSearch();
@@ -50,11 +51,15 @@ export default function Page() {
                             key={index}
                             className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-3/4 md:w-1/4 h-full"
                         >
-                            <Image
-                                className="w-full h-3/5 object-cover rounded-md mb-4"
-                                src={event.bannerImageUrl ?? "https://placehold.co/1366x768?text=event"}
-                                alt='event'
-                            />
+                            <div className="relative w-full min-h-[30vh] mb-4">
+                                <Image
+                                    className="rounded-md"
+                                    src={event.bannerImageUrl ?? "https://placehold.co/1366x768?text=event"}
+                                    layout="fill"
+                                    objectFit="cover"
+                                    alt='event'
+                                />
+                            </div>
                             <div className="w-full h-1/5 flex flex-col justify-center items-start">
                                 <h3 className="overflow-hidden truncate w-full text-lg font-bold">{event.name}</h3>
                                 <h5 className="overflow-hidden truncate w-full">{moment(event.time).format('LT [on] DD/MM/YYYY [UTC]Z')}</h5>

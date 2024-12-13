@@ -86,23 +86,27 @@ export default function Component() {
                         {authentication.state.isLoggedIn ?
                             (
                                 <>
-                                    <DropdownItem className="gap-2">
+                                    <DropdownItem key="dashboard" className="gap-2">
                                         <p className="font-semibold">{authentication.state.account?.name}</p>
                                         <p className="font-semibold">{authentication.state.account?.email}</p>
                                     </DropdownItem>
                                     <DropdownSection showDivider title="Dashboard">
-                                        <DropdownItem href="/participant">
+                                        <DropdownItem key="participant" href="/participant"
+                                                      onClick={() => router.push("/participant")}>
                                             Participant
                                         </DropdownItem>
-                                        <DropdownItem href="/organizer">
+                                        <DropdownItem key="organizer" href="/organizer"
+                                                      onClick={() => router.push("/organizer")}>
                                             Organizer
                                         </DropdownItem>
                                     </DropdownSection>
                                     <DropdownSection title="Account">
-                                        <DropdownItem href="/profile">
+                                        <DropdownItem key="profile" href="/profile"
+                                                      onClick={() => router.push("/profile")}>
                                             Profile
                                         </DropdownItem>
                                         <DropdownItem
+                                            key="logout"
                                             color="danger"
                                             onClick={handleLogout}
                                         >
@@ -115,11 +119,15 @@ export default function Component() {
                             (
                                 <>
                                     <DropdownItem
+                                        key="login"
+                                        href="/login"
                                         onClick={() => router.push("/login")}
                                     >
                                         Login
                                     </DropdownItem>
                                     <DropdownItem
+                                        key="register"
+                                        href="/register"
                                         onClick={() => router.push("/register")}
                                     >
                                         Register

@@ -36,11 +36,12 @@ export default function Page() {
                     {
                         [1, 2, 3, 4].map((item, index) => (
                             <SwiperSlide key={index}>
-                                <div className="w-full">
+                                <div className="w-full h-[90vh] relative mb-12">
                                     <Image
-                                        className="w-full h-[75vh] object-cover"
+                                        className="rounded-md"
                                         src={`https://placehold.co/1366x768?text=hero${index}`}
-                                        height={768} width={1366}
+                                        layout="fill"
+                                        objectFit="cover"
                                         alt="hero"
                                     />
                                 </div>
@@ -74,15 +75,16 @@ export default function Page() {
                             key={index}
                             className="flex flex-col justify-center items-center p-4 border-gray-300 rounded-lg shadow-md w-3/4 md:w-1/4 h-full"
                         >
-                            <div className="w-full">
+                            <div className="relative w-full min-h-[30vh] mb-4">
                                 <Image
-                                    className="w-full h-3/5 object-cover rounded-md mb-4"
-                                    width={1366} height={768}
+                                    className="rounded-md"
                                     src={event.bannerImageUrl ?? "https://placehold.co/1366x768?text=event"}
+                                    layout="fill"
+                                    objectFit="cover"
                                     alt='event'
                                 />
                             </div>
-                            <div className="w-full h-1/5 flex flex-col justify-center items-start">
+                            <div className="w-full min-h-[15vh] flex flex-col justify-center items-start">
                                 <h3 className="overflow-hidden truncate w-full text-lg font-bold">{event.name}</h3>
                                 <h5 className="overflow-hidden truncate w-full">{moment(event.time).format('LT [on] DD/MM/YYYY [UTC]Z')}</h5>
                                 <div className="overflow-hidden truncate w-full">{event.location}</div>

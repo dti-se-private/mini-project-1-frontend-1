@@ -74,13 +74,14 @@ export const useAuthentication = () => {
     }
 
     const logout = async () => {
+        let logoutApiResult = undefined;
         try {
-            const logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
-            return logoutApiResult
+            logoutApiResult = await logoutApiTrigger(state.session!).unwrap();
         } catch (e) {
-            dispatch(authenticationSlice.actions.logout({}));
             throw e;
         }
+        dispatch(authenticationSlice.actions.logout({}));
+        return logoutApiResult
     }
 
     const refreshSession = async (request: Session) => {
