@@ -1,5 +1,5 @@
 import {CreateFeedbackRequest} from "@/src/stores/apis/participantApi";
-import FormInput from "@/src/components/FormInput";
+import FormInputArea from "@/src/components/FormInputArea";
 import * as Yup from "yup";
 import {Form, Formik} from "formik";
 import {Button} from "@nextui-org/react";
@@ -33,7 +33,7 @@ export default function DeleteFeedbackModalBody() {
                 {({values, errors, touched}) => (
                     <Form className="w-full">
                         <div className="w-full p-6 space-y-4 mb-2 border-b-1 border-b-gray-300">
-                            <FormInput name="review" placeholder="type your ldeas or suggestions" type="text"/>
+                            <FormInputArea name="review" placeholder="type your ldeas or suggestions" type="text" isDisabled />
                             <div className="form-group">
                                 <div className="flex justify-center space-x-2 mt-2">
                                     {Array.from({length: 5}, (_, i) => {
